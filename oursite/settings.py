@@ -29,6 +29,10 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drfpasswordless',
 ]
 
 MIDDLEWARE = [
@@ -99,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Passwordless contact points allowed
+PASSWORDLESS_AUTH = {
+        'PASSWORDLESS_AUTH_TYPES': ['EMAIL', 'MOBILE'],
+}
+
+# Email address to send the callback token from  PASSWORDLESS_EMAIL_NOREPLY_ADDRESS
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
