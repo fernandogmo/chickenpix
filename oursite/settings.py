@@ -25,7 +25,7 @@ SECRET_KEY = '***REMOVED***'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['55.55.55.5', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -37,7 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drfpasswordless',
+    'app',
 ]
+
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,6 +108,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORDLESS_AUTH = {
+        'PASSWORDLESS_AUTH_TYPES': ['EMAIL', 'MOBILE'],
+        'PASSWORDLESS_EMAIL_NOREPLAY_ADDRESS': 'allisonjoyweiner@gmail.com',
+}
+
+AUTH_USER_MODEL = 'app.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -120,3 +135,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL= 'home'
+
+# Email backend for development
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
