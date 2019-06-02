@@ -13,9 +13,9 @@
   </p>
 {% else %}
   <p>You are not logged in. Please enter your email address to receive a login token. No signup is required!</p>
-  <form method="post" action="/auth/email/">
+  <form method="post" action="/">
     {% csrf_token %}
-    <input type="text" size="25" name="email">
+    {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
 {% endif %}
