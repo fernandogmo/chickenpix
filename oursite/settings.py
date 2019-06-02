@@ -76,6 +76,12 @@ TEMPLATES = [
     },
 ]
 
+PASSWORDLESS_AUTH = {
+        'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
+        'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
+        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',    
+}
+
 WSGI_APPLICATION = 'oursite.wsgi.application'
 
 
