@@ -25,7 +25,7 @@ SECRET_KEY = '6vjk-e9@up&u2#vswqujb@!^rv9hku_f2l^3y6s+aixg_jzhq7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['55.55.55.5', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -44,7 +44,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drfpasswordless',
+    'app',
 ]
+
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +80,12 @@ TEMPLATES = [
     },
 ]
 
+PASSWORDLESS_AUTH = {
+        'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
+        'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
+        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',    
+}
+
 WSGI_APPLICATION = 'oursite.wsgi.application'
 
 
@@ -91,30 +103,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-# Passwordless contact points allowed
-PASSWORDLESS_AUTH = {
-        'PASSWORDLESS_AUTH_TYPES': ['EMAIL', 'MOBILE'],
-}
-
-# Email address to send the callback token from PASSWORDLESS_EMAIL_NOREPLY_ADDRESS
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+AUTH_USER_MODEL = 'app.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -136,3 +125,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL= 'home'
+
+# Email backend for development
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

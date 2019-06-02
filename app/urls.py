@@ -1,9 +1,8 @@
-from django.urls import path
-
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
-        path('', TemplateView.as_view(template_name='home.html'), name='home'),
+        path('', views.home, name='home'),
         path('accounts/', include('django.contrib.auth.urls')),
         path('', include('drfpasswordless.urls')),
         path('success/', views.email_auth_success, name='email_auth_success'),
