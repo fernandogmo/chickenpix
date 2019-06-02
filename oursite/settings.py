@@ -29,6 +29,10 @@ ALLOWED_HOSTS = ['55.55.55.5', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
