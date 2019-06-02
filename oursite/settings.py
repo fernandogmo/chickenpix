@@ -111,9 +111,10 @@ PASSWORDLESS_AUTH = {
         'PASSWORDLESS_AUTH_TYPES': ['EMAIL', 'MOBILE'],
 }
 
-# Email address to send the callback token from  PASSWORDLESS_EMAIL_NOREPLY_ADDRESS
+# Email address to send the callback token from PASSWORDLESS_EMAIL_NOREPLY_ADDRESS
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
