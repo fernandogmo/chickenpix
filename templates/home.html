@@ -4,11 +4,19 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<h2>Pixguise</h2>
 {% if user.email_verified %}
   <p>Hi {{ user.email }}!</p>
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <p><a href="{% url 'photos' %}">photos</a></p>
+  <p>
+    <a href="{% url 'logout' %}">Logout</a>
+    <a href="{% url 'photos' %}">Photos</a>
+  </p>
 {% else %}
-  <a href="{% url 'login' %}">login</a>
+  <p>You are not logged in. Please enter your email address to receive a login token. No signup is required!</p>
+  <form method="post" action="/auth/email/">
+    {% csrf_token %}
+    <input type="text" size="25" name="email">
+    <button type="submit">Login</button>
+  </form>
 {% endif %}
 {% endblock %}
