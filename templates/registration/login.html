@@ -5,10 +5,11 @@
 
 {% block content %}
 <h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
+<form method="post" action="/accounts/auth/email/">
+	{% csrf_token %}
+	<p>Enter your email address to receive a login token</p>
+	<input type="text" size="25" name="email">
+	<button type="submit">Login</button>
 </form>
 {% endblock %}
 

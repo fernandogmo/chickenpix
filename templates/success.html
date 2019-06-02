@@ -1,0 +1,13 @@
+<!-- templates/success.html -->
+{% extends 'base.html' %}
+
+{% block title %}Success!{% endblock %}
+
+{% block content %}
+<form method="post" action="/callback/auth/">
+	{% csrf_token %}
+	<p>Please enter the login token you received</p>
+	<input type="text" size="25" name="token">
+	<button type="submit">Validate</button>
+</form>
+{% endblock %}
