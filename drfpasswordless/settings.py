@@ -19,7 +19,7 @@ DEFAULTS = {
 
     # Marks itself as verified the first time a user completes auth via token.
     # Automatically unmarks itself if email is changed.
-    'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': False,
+    'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
     'PASSWORDLESS_USER_EMAIL_VERIFIED_FIELD_NAME': 'email_verified',
 
     # Marks itself as verified the first time a user completes auth via token.
