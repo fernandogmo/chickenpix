@@ -1,4 +1,7 @@
 import logging
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.contrib.auth import login
 from rest_framework import parsers, renderers, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -56,9 +59,9 @@ class AbstractBaseObtainCallbackToken(APIView):
             else:
                 status_code = status.HTTP_400_BAD_REQUEST
                 response_detail = self.failure_response
-            return Response({'detail': response_detail}, status=status_code)
+            return redirect('/success')
         else:
-            return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+            return redirect('/failure')
 
 
 class ObtainEmailCallbackToken(AbstractBaseObtainCallbackToken):
@@ -134,7 +137,11 @@ class AbstractBaseObtainAuthToken(APIView):
 
             if token:
                 # Return our key for consumption.
-                return Response({'token': token.key}, status=status.HTTP_200_OK)
+                login(request, user)
+                response = redirect('/')
+                response['HTTP_AUTHORIZATION'] = 'Token {}'.format(token.key)
+                return response 
+                # return Response({'token': token.key}, status=status.HTTP_200_OK)
         else:
             logger.error("Couldn't log in unknown user. Errors on serializer: {}".format(serializer.error_messages))
         return Response({'detail': 'Couldn\'t log you in. Try again later.'}, status=status.HTTP_400_BAD_REQUEST)
