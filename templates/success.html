@@ -4,7 +4,7 @@
 {% block title %}Success!{% endblock %}
 
 {% block content %}
-<p>Please enter the login token you received</p>
+<p>{{ message }}</p>
 <form method="post" action="/success/">
 	{% csrf_token %}
 	{{ form.as_p }}
