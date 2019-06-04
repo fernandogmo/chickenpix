@@ -8,9 +8,11 @@ def login_user(request, token):
     Make sure that the token is associated with a user
     """
     if token is None:
+        # TODO - change this to a redirect
         return None
     user_token = Token.objects.get(key=token)
     user = User.objects.get(id=user_token.user_id)
     if user is None:
+        # TODO - change this to a redirect
         return None
     login(request, user)
