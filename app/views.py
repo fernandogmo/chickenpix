@@ -16,11 +16,12 @@ def index(request):
 def success(request):
     if request.method == 'GET':
         form = TokenForm()
-        message = request.GET.get("message", "")
+        # message = request.GET.get("message", "WUT")
+        message = request.session['_message']
     else:
         form = TokenForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://0.0.0.0:8000/callback/auth/', data={'token': request.POST.get("token", "")})
+            response = requests.post('http://localhost:8000/callback/auth/', data={'token': request.POST.get("token", "")})
             if response.status_code == 200:
                 token = response.json().get('token')
                 user_token = Token.objects.get(key=token)
@@ -28,7 +29,9 @@ def success(request):
                 login(request, user)
                 return redirect('/')
             else:
-                return redirect('/')
+                request.session['_message'] = response.json().get('token', "NO DETAIL!")[0] + " Please re-enter your token."
+                #return redirect('/')
+                return redirect('/success')
         else:
             return render(request, 'failure.html')
     return render(request, 'success.html', {'form': form, 'message': message})
@@ -48,7 +51,9 @@ def home(request):
         if form.is_valid():
             response = requests.post('http://localhost:8000/auth/email/', data={'email': request.POST.get("email", "")})
             if response.status_code == 200:
-                return redirect('/success', message=response.json().get('detail'))
+                request.session['_message'] = response.json().get('detail', "NO MESAGE!")
+
+                return redirect('/success')
             else:
                 return render('/', {'message': response.json().get('detail')})
     return render(request, 'home.html', {'form': form, 'message': 'You are not logged in. Please enter your email address to receive a login token. No signup is required!'})
