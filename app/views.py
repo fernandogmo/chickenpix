@@ -25,7 +25,7 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://0.0.0.0:8000/auth/email/', data={'email': request.POST.get("email", "")})
+            response = requests.post('http://localhost:8000/auth/email/', data={'email': request.POST.get("email", "")})
             if response.status_code == 200:
                 return render(request, 'success.html')
             else:
