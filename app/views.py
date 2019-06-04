@@ -37,7 +37,7 @@ def validate(request):
                 login_user(request, auth_token)
                 return redirect('/')
             else:
-                request.session['_message'] = auth_token[0] + message
+                request.session['_message'] = ' '.join(auth_token) + message
                 return redirect('/validate')
         else:
             request.session['_message'] = 'Something went wrong.' + message
