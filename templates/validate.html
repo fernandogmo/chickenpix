@@ -1,11 +1,11 @@
-<!-- templates/success.html -->
+<!-- templates/validate.html -->
 {% extends 'base.html' %}
 
-{% block title %}Success!{% endblock %}
+{% block title %}Let's get you in!{% endblock %}
 
 {% block content %}
 <p>{{ message }}</p>
-<form method="post" action="/success/">
+<form method="post" action="/validate/">
 	{% csrf_token %}
 	{{ form.as_p }}
 	<button type="submit">Validate</button>
