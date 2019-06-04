@@ -5,6 +5,6 @@ urlpatterns = [
         path('', views.home, name='home'),
         path('accounts/', include('django.contrib.auth.urls')),
         path('', include('drfpasswordless.urls')),
-        path('success/', views.success, name='success'),
+        path('validate/', views.validate, name='validate'),
         path('photos/', views.photos, name='photos'),
 ]

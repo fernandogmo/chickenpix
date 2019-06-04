@@ -13,7 +13,7 @@ User = get_user_model()
 def index(request):
     return HttpResponse("Hello, world! PREPARE TO BE PIXELATED")
 
-def success(request):
+def validate(request):
     if request.method == 'GET':
         form = TokenForm()
         message = request.session['_message']
@@ -29,11 +29,11 @@ def success(request):
                 return redirect('/')
             else:
                 request.session['_message'] = response.json().get('token', "NO DETAIL!")[0] + " Please re-enter your token."
-                return redirect('/success')
+                return redirect('/validate')
         else:
             request.session['_message'] = "Something went wrong. Please re-enter your token."
-            return redirect('/success')
-    return render(request, 'success.html', {'form': form, 'message': message})
+            return redirect('/validate')
+    return render(request, 'validate.html', {'form': form, 'message': message})
 
 
 @login_required
@@ -50,7 +50,7 @@ def home(request):
             if response.status_code == 200:
                 request.session['_message'] = response.json().get('detail', "NO DETAIL!")
 
-                return redirect('/success')
+                return redirect('/validate')
             else:
                 return render('/', {'message': response.json().get('detail')})
     return render(request, 'home.html', {'form': form, 'message': 'You are not logged in. Please enter your email address to receive a login token. No signup is required!'})
