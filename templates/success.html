@@ -4,10 +4,10 @@
 {% block title %}Success!{% endblock %}
 
 {% block content %}
-<form method="post" action="/callback/auth/">
+<p>{{ message }}</p>
+<form method="post" action="/success/">
 	{% csrf_token %}
-	<p>Please enter the login token you received</p>
-	<input type="text" size="25" name="token">
+	{{ form.as_p }}
 	<button type="submit">Validate</button>
 </form>
 {% endblock %}
