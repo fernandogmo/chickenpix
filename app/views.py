@@ -22,7 +22,7 @@ def success(request):
         if form.is_valid():
             response = requests.post('http://0.0.0.0:8000/callback/auth/', data={'token': request.POST.get("token", "")})
             if response.status_code == 200:
-                token = response.json().get('token') 
+                token = response.json().get('token')
                 user_token = Token.objects.get(key=token)
                 user = User.objects.get(id=user_token.user_id)
                 login(request, user)
