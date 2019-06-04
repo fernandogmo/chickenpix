@@ -4,8 +4,8 @@
 {% block title %}Success!{% endblock %}
 
 {% block content %}
-<p>{{ message }}</p>
 <form method="post" action="/success/">
+	<p>{{ message }}</p>
 	{% csrf_token %}
 	{{ form.as_p }}
 	<button type="submit">Validate</button>
