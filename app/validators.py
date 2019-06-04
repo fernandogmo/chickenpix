@@ -8,9 +8,10 @@ def login_user(request, token):
     Make sure that the token is associated with a user
     """
     if not token:
-        return None
+        return False
     user_token = Token.objects.get(key=token)
     user = User.objects.get(id=user_token.user_id)
     if not user:
-        return None
+        return False
     login(request, user)
+    return True
