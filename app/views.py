@@ -34,7 +34,9 @@ def validate(request):
             auth_token = response.json().get('token', 'NO DETAIL!')
             if response.status_code == 200:
                 # Make sure auth token is associated with a user
-                login_user(request, auth_token)
+                if not login_user(request, auth_token):
+                    request.session['_message'] = "We couldn't log you in." + message
+                    return redirect('/validate')
                 return redirect('/')
             else:
                 request.session['_message'] = ' '.join(auth_token) + message
