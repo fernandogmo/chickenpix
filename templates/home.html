@@ -6,14 +6,14 @@
 {% block content %}
 
 <h2>Pixguise</h2>
-{% if user.email_verified %}
+{% if user.is_authenticated %}
   <p>Hi {{ user.email }}!</p>
   <p>
     <a href="{% url 'logout' %}">Logout</a>
     <a href="{% url 'photos' %}">Photos</a>
   </p>
 {% else %}
-  <p>You are not logged in. Please enter your email address to receive a login token. No signup is required!</p>
+<p>{{ message }}</p>
   <form method="post" action="/">
     {% csrf_token %}
     {{ form.as_p }}
