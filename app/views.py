@@ -13,29 +13,29 @@ User = get_user_model()
 def index(request):
     return HttpResponse("Hello, world! PREPARE TO BE PIXELATED")
 
-def success(request):
+def validate(request):
     if request.method == 'GET':
         form = TokenForm()
-        message = request.GET.get("message", "")
+        message = request.session['_message']
     else:
         form = TokenForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://0.0.0.0:8000/callback/auth/', data={'token': request.POST.get("token", "")})
+            response = requests.post('http://localhost:8000/callback/auth/', data={'token': request.POST.get("token", "")})
             if response.status_code == 200:
-                token = response.json().get('token') 
+                token = response.json().get('token')
                 user_token = Token.objects.get(key=token)
                 user = User.objects.get(id=user_token.user_id)
                 login(request, user)
                 return redirect('/')
             else:
-                return redirect('/')
+                request.session['_message'] = response.json().get('token', "NO DETAIL!")[0] + " Please re-enter your token."
+                return redirect('/validate')
         else:
-            return render(request, 'failure.html')
-    return render(request, 'success.html', {'form': form, 'message': message})
-"""
-def failure(request):
-    return render(request, 'failure.html')
-"""
+            request.session['_message'] = "Something went wrong. Please re-enter your token."
+            return redirect('/validate')
+    return render(request, 'validate.html', {'form': form, 'message': message})
+
+
 @login_required
 def photos(request):
     return render(request, 'photos.html')
@@ -46,9 +46,11 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://0.0.0.0:8000/auth/email/', data={'email': request.POST.get("email", "")})
+            response = requests.post('http://localhost:8000/auth/email/', data={'email': request.POST.get("email", "")})
             if response.status_code == 200:
-                return redirect('/success', message=response.json().get('detail'))
+                request.session['_message'] = response.json().get('detail', "NO DETAIL!")
+
+                return redirect('/validate')
             else:
                 return render('/', {'message': response.json().get('detail')})
     return render(request, 'home.html', {'form': form, 'message': 'You are not logged in. Please enter your email address to receive a login token. No signup is required!'})

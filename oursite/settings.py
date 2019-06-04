@@ -25,7 +25,7 @@ SECRET_KEY = '6vjk-e9@up&u2#vswqujb@!^rv9hku_f2l^3y6s+aixg_jzhq7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['55.55.55.5', '0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -83,7 +83,7 @@ TEMPLATES = [
 PASSWORDLESS_AUTH = {
         'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
         'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
-        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',    
+        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',
 }
 
 WSGI_APPLICATION = 'oursite.wsgi.application'
