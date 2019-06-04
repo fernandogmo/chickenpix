@@ -3,35 +3,44 @@ from django.http import HttpResponse
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
 from .forms import EmailForm, TokenForm
+from .validators import login_user
 import requests
-import datetime
-from rest_framework.authtoken.models import Token
-
-User = get_user_model()
-
-# Create your views here.
-def index(request):
-    return HttpResponse("Hello, world! PREPARE TO BE PIXELATED")
 
 def validate(request):
+    """
+    Validates the 6-digit callback token sent to user
+    and entered into TokenForm.
+
+    If the callback token is valid, the callback endpoint
+    will return an authentication token and the user will
+    be logged in and redirected to the homepage.
+
+    Otherwise, the user is sent back to the 6-digit token
+    form.
+    """
     if request.method == 'GET':
+        # Render page with empty form
         form = TokenForm()
         message = request.session['_message']
-    else:
+    elif request.method == 'POST':
+        # Initialize TokenForm instance with POSTed 6-digit token
         form = TokenForm(request.POST)
+        message = ' Please re-enter your token.'
         if form.is_valid():
-            response = requests.post('http://localhost:8000/callback/auth/', data={'token': request.POST.get("token", "")})
+            # If token is 6 digits, authenticate it and receive authentication token
+            response = requests.post('http://localhost:8000/callback/auth/',
+                                     data={'token': request.POST.get("token", "")})
+            # Save authentication token or error message
+            auth_token = response.json().get('token', 'NO DETAIL!')
             if response.status_code == 200:
-                token = response.json().get('token')
-                user_token = Token.objects.get(key=token)
-                user = User.objects.get(id=user_token.user_id)
-                login(request, user)
+                # Make sure auth token is associated with a user
+                login_user(request, auth_token)
                 return redirect('/')
             else:
-                request.session['_message'] = response.json().get('token', "NO DETAIL!")[0] + " Please re-enter your token."
+                request.session['_message'] = auth_token[0] + message
                 return redirect('/validate')
         else:
-            request.session['_message'] = "Something went wrong. Please re-enter your token."
+            request.session['_message'] = 'Something went wrong.' + message
             return redirect('/validate')
     return render(request, 'validate.html', {'form': form, 'message': message})
 
@@ -41,16 +50,26 @@ def photos(request):
     return render(request, 'photos.html')
 
 def home(request):
+    """
+    Handles homepage view.
+
+    Renders a page with a email address form &
+    sends an email containing a 6-digit login token
+    """
     if request.method == 'GET':
         form = EmailForm()
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://localhost:8000/auth/email/', data={'email': request.POST.get("email", "")})
+            response = requests.post('http://localhost:8000/auth/email/',
+                                     data={'email': request.POST.get("email", "")})
+            detail = response.json().get('detail', 'NO DETAIL!')
             if response.status_code == 200:
-                request.session['_message'] = response.json().get('detail', "NO DETAIL!")
-
+                request.session['_message'] = detail
                 return redirect('/validate')
             else:
-                return render('/', {'message': response.json().get('detail')})
-    return render(request, 'home.html', {'form': form, 'message': 'You are not logged in. Please enter your email address to receive a login token. No signup is required!'})
+                return render(request, 'home.html', {'form': form, 'message': detail})
+    return render(request, 'home.html', {'form': form,
+                                         'message': 'You are not logged in. \
+                                         Please enter your email address to \
+                                         receive a login token. No signup is required!'})
