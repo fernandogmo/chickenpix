@@ -25,7 +25,7 @@ class MyUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True, blank=True, null=True)
     email_verified = models.BooleanField(default=False)
-    
+
     #mobile = models.CharField(validators=[phone_regex], max_length=15, unique=True, blank=True, null=True)
     #mobile_verified = models.BooleanField(default=False)
 
