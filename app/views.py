@@ -16,7 +16,6 @@ def index(request):
 def success(request):
     if request.method == 'GET':
         form = TokenForm()
-        # message = request.GET.get("message", "WUT")
         message = request.session['_message']
     else:
         form = TokenForm(request.POST)
@@ -30,15 +29,13 @@ def success(request):
                 return redirect('/')
             else:
                 request.session['_message'] = response.json().get('token', "NO DETAIL!")[0] + " Please re-enter your token."
-                #return redirect('/')
                 return redirect('/success')
         else:
-            return render(request, 'failure.html')
+            request.session['_message'] = "Something went wrong. Please re-enter your token."
+            return redirect('/success')
     return render(request, 'success.html', {'form': form, 'message': message})
-"""
-def failure(request):
-    return render(request, 'failure.html')
-"""
+
+
 @login_required
 def photos(request):
     return render(request, 'photos.html')
@@ -51,7 +48,7 @@ def home(request):
         if form.is_valid():
             response = requests.post('http://localhost:8000/auth/email/', data={'email': request.POST.get("email", "")})
             if response.status_code == 200:
-                request.session['_message'] = response.json().get('detail', "NO MESAGE!")
+                request.session['_message'] = response.json().get('detail', "NO DETAIL!")
 
                 return redirect('/success')
             else:
