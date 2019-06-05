@@ -42,11 +42,12 @@ class Album(Base):
      owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
      # archive_id = models.ForeignKey(Archive)
      is_private = models.BooleanField(default=True)
+     title = models.CharField(max_length=255, null=True)
 
 class Photo(Base):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    albums = models.ManyToManyField(Album)
-    cloud_photo_link = models.URLField(unique=True)
+    # albums = models.ManyToManyField(Album)
+    # cloud_photo_link = models.URLField(unique=True)
     filename = models.FileField(upload_to=settings.MEDIA_ROOT)
 
 class ArchiveManager(models.Manager):
