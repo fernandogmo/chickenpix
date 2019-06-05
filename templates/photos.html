@@ -6,8 +6,16 @@
 {% block content %}
 <H1>Pixguise</H1>
   <form method="post" action="/upload/">
-	  {% csrf_token %}
+    {% csrf_token %}
+    <p>Select the files you would like to upload.
     <input type="file" name="album" multiple="">
+    </p>
+    <p>Name your album.
+    <input type="text" name="title">
+    </p>
+    <p>Check this box if you want to make your album public. The default is private.
+    <input type="checkbox" name="is_private">
+    </p>
     <button type="submit">Upload</button>
   </form>
   <p>
