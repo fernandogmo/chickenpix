@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, BaseManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db.models.manager import BaseManager
 from django.core.validators import RegexValidator
 from uuid import uuid4
 from django.conf import settings
@@ -37,6 +38,38 @@ class Base(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Album(Base):
+     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+     # archive_id = models.ForeignKey(Archive)
+     is_private = models.BooleanField(default=True)
+
+class Photo(Base):
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    albums = models.ManyToManyField(Album)
+    cloud_photo_link = models.URLField(unique=True)
+    filename = models.FileField(MEDIA_ROOT='uploads/')
+
+class ArchiveManager(models.Manager):
+    def create_archive(self, album_id):
+        if not album_id:
+            raise ValueError('Album id is required')
+        # TODO figure out compression
+        photos = Photo.objects.get(album_id=album_id)
+        # for photo in photos:
+            # add photos to folder to archive then archive to whatever file name
+        filename = 'lol.zip'
+
+        archive = self.model(album_id=album_id, filename=filename)
+
+        archive.save(using=self._db)
+        return archive
+
+class Archive(Base):
+    filename = models.URLField(unique=True)
+    album_id = models.ForeignKey(Album)
+
+    objects = ArchiveManager()
+
 class LinkManager(models.Manager):
     def create_link(self, archive_id):
         if not archive_id:
@@ -55,36 +88,3 @@ class Link(Base):
     archive_id = models.ForeignKey(Archive)
 
     objects = LinkManager()
-
-class ArchiveManager(models.Manager):
-    def create_archive(self, album_id):
-        if not album_id:
-            raise ValueError('Album id is required')
-
-       # TODO figure out compression
-       photos = Photo.objects.get(album_id=album_id)
-       for photo in photos:
-           add photos to folder to archive then archive to whatever file name
-       filename = 'lol.zip'
-
-       archive = self.model(album_id=album_id, filename=filename)
-
-       archive.save(using=self._db)
-       return archive
-
-class Archive(Base):
-    filename = models.URLField(unique=True)
-    album_id = models.ForeignKey(Album)
-
-    objects = ArchiveManager()
-
-class Album(Base):
-     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-     archive_id = models.ForeignKey(Archive)
-     is_private = models.BooleanField(default=True)
-
-class Photo(Base):
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    albums = models.ManyToManyField(Album)
-    cloud_photo_link = models.URLField(unique=True)
-    filename = models.FileField(MEDIA_ROOT='uploads/')
