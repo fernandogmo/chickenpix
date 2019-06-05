@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, BaseManager
 from django.core.validators import RegexValidator
-
+from uuid import uuid4
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                              message="Mobile number must be entered in the format:"
@@ -36,11 +36,43 @@ class Base(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class LinkManager(models.Manager):
+    def create_link(self, archive_id):
+        if not archive_id:
+            raise ValueError('Archive id is required')
+
+        url = 'http://localhost:8000/{}/'.format(uuid4())
+
+        link = self.model(url=url, archive_id=archive_id)
+
+        link.save(using=self._db)
+        return link
+
 class Link(Base):
     is_expired = models.BooleanField(default=False)
     url = models.URLField(unique=True)
     archive_id = models.ForeignKey(Archive)
 
+    objects = LinkManager()
+
+class ArchiveManager(models.Manager):
+    def create_archive(self, album_id):
+        if not album_id:
+            raise ValueError('Album id is required')
+
+       # TODO figure out compression
+       photos = Photo.objects.get(album_id=album_id)
+       for photo in photos:
+           add photos to folder to archive then archive to whatever file name
+       filename = 'lol.zip'
+
+       archive = self.model(album_id=album_id, filename=filename)
+
+       archive.save(using=self._db)
+       return archive
+
 class Archive(Base):
     filename = models.URLField(unique=True)
     album_id = models.ForeignKey(Album)
+
+    objects = ArchiveManager()
