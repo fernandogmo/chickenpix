@@ -130,3 +130,6 @@ LOGOUT_REDIRECT_URL= 'home'
 EMAIL_HOST = '127.0.0.1'
 EMAIL_PORT = 1025
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Photo upload and download
+MEDIA_ROOT = 'uploads/'
