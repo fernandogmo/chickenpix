@@ -21,7 +21,6 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True, blank=True, null=True)
     email_verified = models.BooleanField(default=False)
@@ -32,3 +31,16 @@ class CustomUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
+
+class Base(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Link(Base):
+    is_expired = models.BooleanField(default=False)
+    url = models.URLField(unique=True)
+    archive_id = models.ForeignKey(Archive)
+
+class Archive(Base):
+    filename = models.URLField(unique=True)
+    album_id = models.ForeignKey(Album)
