@@ -38,16 +38,51 @@ class Base(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class AlbumManager(models.Manager):
+    """ Naive manager """
+    def create_album(self, title, owner_id, archive_id):
+        if not title:
+            raise ValueError('Title is required')
+        if not owner_id:
+            raise ValueError('Owner id is required')
+        if not archive_id:
+            raise ValueError('Archive id is required')
+
+        album = self.model(title=title, owner_id=owner_id, archive_id=archive_id)
+
+        album.save(using=self._db)
+        return album
+
 class Album(Base):
-     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-     # archive_id = models.ForeignKey(Archive)
-     is_private = models.BooleanField(default=True)
+    title = models.CharField(max_length=100)
+    owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE)
+    is_private = models.BooleanField(default=True)
+
+class PhotoManager(models.Manager):
+    """ Naive manager. """
+    def create_photo(self, filename, users, albums, link):
+        if not filename:
+            raise ValueError('Filename is required')
+        if not users:
+            raise ValueError('Users is required')
+        if not albums:
+            raise ValueError('Albums is required')
+        if not link:
+            raise ValueError('Link is required')
+
+        photo = self.model(filename=filename,
+                users=users,
+                albums=albums,
+                cloud_photo_link=link)
+        photo.save(using=self._db)
+        return photo
 
 class Photo(Base):
+    filename = models.FileField(upload_to=settings.MEDIA_ROOT)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     albums = models.ManyToManyField(Album)
     cloud_photo_link = models.URLField(unique=True)
-    filename = models.FileField(MEDIA_ROOT='uploads/')
 
 class ArchiveManager(models.Manager):
     def create_archive(self, album_id):
@@ -66,7 +101,7 @@ class ArchiveManager(models.Manager):
 
 class Archive(Base):
     filename = models.URLField(unique=True)
-    album_id = models.ForeignKey(Album)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
 
     objects = ArchiveManager()
 
@@ -85,6 +120,6 @@ class LinkManager(models.Manager):
 class Link(Base):
     is_expired = models.BooleanField(default=False)
     url = models.URLField(unique=True)
-    archive_id = models.ForeignKey(Archive)
+    archive_id = models.ForeignKey(Archive, on_delete=models.CASCADE)
 
     objects = LinkManager()
