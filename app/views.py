@@ -75,3 +75,6 @@ def home(request):
                                          'message': 'You are not logged in. \
                                          Please enter your email address to \
                                          receive a login token. No signup is required!'})
+
+def upload(request):
+    return render(request, 'upload.html', {'data': request.POST})
