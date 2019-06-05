@@ -5,7 +5,8 @@
 
 {% block content %}
 <H1>Pixguise</H1>
-  <form method="post" action="/upload">
+  <form method="post" action="/upload/">
+	  {% csrf_token %}
     <input type="file" name="album" multiple="">
     <button type="submit">Upload</button>
   </form>

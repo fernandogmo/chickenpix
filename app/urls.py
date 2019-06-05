@@ -7,4 +7,5 @@ urlpatterns = [
         path('', include('drfpasswordless.urls')),
         path('validate/', views.validate, name='validate'),
         path('photos/', views.photos, name='photos'),
+        path('upload/', views.upload, name='upload'),
 ]
