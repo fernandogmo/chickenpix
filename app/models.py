@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, BaseManager
 from django.core.validators import RegexValidator
 from uuid import uuid4
+from django.conf import settings
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                              message="Mobile number must be entered in the format:"
@@ -76,3 +77,14 @@ class Archive(Base):
     album_id = models.ForeignKey(Album)
 
     objects = ArchiveManager()
+
+class Album(Base):
+     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+     archive_id = models.ForeignKey(Archive)
+     is_private = models.BooleanField(default=True)
+
+class Photo(Base):
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    albums = models.ManyToManyField(Album)
+    cloud_photo_link = models.URLField(unique=True)
+    filename = models.FileField(MEDIA_ROOT='uploads/')
