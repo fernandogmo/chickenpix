@@ -47,7 +47,7 @@ class Photo(Base):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     albums = models.ManyToManyField(Album)
     cloud_photo_link = models.URLField(unique=True)
-    filename = models.FileField(MEDIA_ROOT='uploads/')
+    filename = models.FileField(upload_to=settings.MEDIA_ROOT)
 
 class ArchiveManager(models.Manager):
     def create_archive(self, album_id):
@@ -66,7 +66,7 @@ class ArchiveManager(models.Manager):
 
 class Archive(Base):
     filename = models.URLField(unique=True)
-    album_id = models.ForeignKey(Album)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
 
     objects = ArchiveManager()
 
@@ -75,7 +75,7 @@ class LinkManager(models.Manager):
         if not archive_id:
             raise ValueError('Archive id is required')
 
-        url = 'http://localhost:8000/{}/'.format(uuid4())
+        url = 'http://0.0.0.0:8000/{}/'.format(uuid4())
 
         link = self.model(url=url, archive_id=archive_id)
 
@@ -85,6 +85,6 @@ class LinkManager(models.Manager):
 class Link(Base):
     is_expired = models.BooleanField(default=False)
     url = models.URLField(unique=True)
-    archive_id = models.ForeignKey(Archive)
+    archive_id = models.ForeignKey(Archive, on_delete=models.CASCADE)
 
     objects = LinkManager()
