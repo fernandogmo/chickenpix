@@ -32,3 +32,20 @@ class CustomUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
+
+class Base(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Album(Base):
+     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL)
+     archive_id = models.ForeignKey(Archive)
+     is_private = models.BooleanField(default=True)
+
+
+class Photo(Base):
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    albums = models.ManyToManyField(Album)
+    cloud_photo_link = models.URLField(unique=True)
+    filename = models.FileField(MEDIA_ROOT='uploads/')
