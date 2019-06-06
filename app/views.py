@@ -6,6 +6,7 @@ from .forms import EmailForm, TokenForm
 from .validators import login_user
 from .models import Album, Photo, Archive, Link
 import requests
+from uuid import uuid4
 
 def validate(request):
     """
@@ -81,11 +82,9 @@ def upload(request):
     """
     Creates album, photos, archive, and link
     """
-    album = Album.objects.get_or_create(owner_id=request.user, title=request.POST.get('title', ''))
-    for photo in request.POST.get('album', ''):
-        Photo.objects.get_or_create(filename=photo)
-    """
-    archive = Archive.objects.get_or_create(album_id=album.id)
-    link = Link.objects.get_or_create(archive_id=archive.id)
-    """
+    album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
+    for photo in request.POST.getlist('album', ''):
+        Photo.objects.create(filename=photo)
+    archive = Archive.objects.create(album_id=album)
+    link = Link.objects.create(archive_id=archive)
     return render(request, 'upload.html', {'data': request.POST})
