@@ -5,7 +5,8 @@
 
 {% block content %}
 <H1>Pixguise</H1>
-  <form method="post" action="/upload/">
+<!-- "multipart/form-data" is necessary for the actual images to be uploaded, not just the file names -->
+  <form method="post" action="/upload/", enctype="multipart/form-data">
     {% csrf_token %}
     <p>Select the files you would like to upload.
     <input type="file" name="album" multiple="">

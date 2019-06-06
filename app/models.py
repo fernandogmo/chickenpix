@@ -4,6 +4,7 @@ from django.db.models.manager import BaseManager
 from django.core.validators import RegexValidator
 from uuid import uuid4
 from django.conf import settings
+import zipfile
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                              message="Mobile number must be entered in the format:"
@@ -78,8 +79,11 @@ class PhotoManager(models.Manager):
         return photo
 
 class Photo(Base):
-    filename = models.FileField(upload_to=settings.MEDIA_ROOT)
+    # TODO: Figure out filepath. Currently this saves to uploads/uploads - we just want it to save to uploads/ - until we figure out S3 - when we will change the MEDIA_ROOT to s3.
+    filename = models.ImageField(upload_to=settings.MEDIA_ROOT, default='None/lol.jpg')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    # TODO: change to ManyToManyField
+    albums = models.ForeignKey(Album, on_delete=models.CASCADE)
     # albums = models.ManyToManyField(Album)
     # cloud_photo_link = models.URLField(unique=True)
 
@@ -87,12 +91,18 @@ class ArchiveManager(models.Manager):
     def create(self, album_id):
         if not album_id:
             raise ValueError('Album id is required')
-        # TODO figure out compression
-        # photos = Photo.objects.get(album_id=album_id)
-        # for photo in photos:
-            # add photos to folder to archive then archive to whatever file name
 
-        filename = 'www.{}.com'.format(uuid4())
+        # TODO - change from absolute path to relative path
+        filename = '/home/vagrant/pixguise/uploads/zipfiles/{}.zip'.format(uuid4())
+
+        # Get a list of all filenames where album id matches the requested album
+        photos = Photo.objects.filter(albums=album_id).values_list('filename', flat=True)
+
+        # Compress all photos into one zip file
+        with zipfile.ZipFile(filename, 'w') as archive:
+            for photo in photos:
+                photo = '/home/vagrant/pixguise/uploads/' + photo
+                archive.write(photo)
 
         archive = self.model(album_id=album_id, filename=filename)
 
