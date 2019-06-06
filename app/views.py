@@ -83,8 +83,9 @@ def upload(request):
     Creates album, photos, archive, and link
     """
     album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
-    for photo in request.POST.getlist('album', ''):
-        Photo.objects.create(filename=photo)
+    # request.FILES has access to the actual files, request.POST just the image names - which is why ImageField wasn't actually saving the photos in the first place.
+    for image in request.FILES.getlist('album'):
+        Photo.objects.create(filename=image, albums=album)
     archive = Archive.objects.create(album_id=album)
     link = Link.objects.create(archive_id=archive)
-    return render(request, 'upload.html', {'data': request.POST})
+    return render(request, 'upload.html', {'data': request.FILES})
