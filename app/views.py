@@ -4,7 +4,9 @@ from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
 from .forms import EmailForm, TokenForm
 from .validators import login_user
+from .models import Album, Photo, Archive, Link
 import requests
+from uuid import uuid4
 
 def validate(request):
     """
@@ -77,4 +79,12 @@ def home(request):
                                          receive a login token. No signup is required!'})
 
 def upload(request):
+    """
+    Creates album, photos, archive, and link
+    """
+    album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
+    for photo in request.POST.getlist('album', ''):
+        Photo.objects.create(filename=photo)
+    archive = Archive.objects.create(album_id=album)
+    link = Link.objects.create(archive_id=archive)
     return render(request, 'upload.html', {'data': request.POST})

@@ -40,28 +40,29 @@ class Base(models.Model):
 
 class AlbumManager(models.Manager):
     """ Naive manager """
-    def create_album(self, title, owner_id, archive_id):
+    def create(self, title, owner_id):
         if not title:
             raise ValueError('Title is required')
         if not owner_id:
             raise ValueError('Owner id is required')
+        """
         if not archive_id:
             raise ValueError('Archive id is required')
-
-        album = self.model(title=title, owner_id=owner_id, archive_id=archive_id)
+        """
+        album = self.model(title=title, owner_id=owner_id)
 
         album.save(using=self._db)
         return album
 
 class Album(Base):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True)
     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE)
+    # archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE)
     is_private = models.BooleanField(default=True)
 
 class PhotoManager(models.Manager):
     """ Naive manager. """
-    def create_photo(self, filename, users, albums, link):
+    def create(self, filename, users, albums, link):
         if not filename:
             raise ValueError('Filename is required')
         if not users:
@@ -72,27 +73,26 @@ class PhotoManager(models.Manager):
             raise ValueError('Link is required')
 
         photo = self.model(filename=filename,
-                users=users,
-                albums=albums,
-                cloud_photo_link=link)
+                users=users)
         photo.save(using=self._db)
         return photo
 
 class Photo(Base):
     filename = models.FileField(upload_to=settings.MEDIA_ROOT)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    albums = models.ManyToManyField(Album)
-    cloud_photo_link = models.URLField(unique=True)
+    # albums = models.ManyToManyField(Album)
+    # cloud_photo_link = models.URLField(unique=True)
 
 class ArchiveManager(models.Manager):
-    def create_archive(self, album_id):
+    def create(self, album_id):
         if not album_id:
             raise ValueError('Album id is required')
         # TODO figure out compression
-        photos = Photo.objects.get(album_id=album_id)
+        # photos = Photo.objects.get(album_id=album_id)
         # for photo in photos:
             # add photos to folder to archive then archive to whatever file name
-        filename = 'lol.zip'
+
+        filename = 'www.{}.com'.format(uuid4())
 
         archive = self.model(album_id=album_id, filename=filename)
 
@@ -106,11 +106,11 @@ class Archive(Base):
     objects = ArchiveManager()
 
 class LinkManager(models.Manager):
-    def create_link(self, archive_id):
+    def create(self, archive_id):
         if not archive_id:
             raise ValueError('Archive id is required')
 
-        url = 'http://localhost:8000/{}/'.format(uuid4())
+        url = 'http://0.0.0.0:8000/{}/'.format(uuid4())
 
         link = self.model(url=url, archive_id=archive_id)
 
