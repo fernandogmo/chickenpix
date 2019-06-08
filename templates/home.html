@@ -1,14 +1,21 @@
 <!-- templates/home.html -->
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home · {{ block.super }}{% endblock %}
 
 {% block content %}
+
+<!-- Replaced by navbar-brand
+<h2>Pixguise</h2>
+-->
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
+  <p>Hi {{ user.email }}!</p>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+<p>{{ message }}</p>
+  <form method="post" action="/">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
 {% endif %}
 {% endblock %}

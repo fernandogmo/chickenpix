@@ -29,6 +29,10 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,7 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drfpasswordless',
+    'app',
 ]
+
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',
+)}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -67,6 +80,12 @@ TEMPLATES = [
     },
 ]
 
+PASSWORDLESS_AUTH = {
+        'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
+        'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
+        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',
+}
+
 WSGI_APPLICATION = 'oursite.wsgi.application'
 
 
@@ -84,21 +103,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
+AUTH_USER_MODEL = 'app.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -120,3 +125,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL= 'home'
+
+# Email backend for development
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Photo upload and download
+MEDIA_ROOT = 'uploads/'
