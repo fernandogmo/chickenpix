@@ -4,15 +4,16 @@
 {% block title %}Let's get you in! · {{ block.super }}{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<!-- TODO https://www.w3.org/QA/Tips/reback -->
-<meta http-equiv="REFRESH" content="0;url=../">
-{% else %}
-<p>{{ message }}</p>
-<form method="post" action="/validate/">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<button type="submit">Validate</button>
-</form>
-{% endif %}
+  {% if user.is_authenticated %}
+    <!-- Negate direct navigation to validate if already validated -->
+    <!-- TODO https://www.w3.org/QA/Tips/reback -->
+    <meta http-equiv="REFRESH" content="0;url=../">
+  {% else %}
+    <p>{{ message }}</p>
+    <form method="post" action="/validate/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Validate</button>
+    </form>
+  {% endif %}
 {% endblock %}
