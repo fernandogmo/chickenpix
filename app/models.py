@@ -116,13 +116,15 @@ class Archive(Base):
     objects = ArchiveManager()
 
 class LinkManager(models.Manager):
-    def create(self, archive_id):
-        if not archive_id:
+    # changed to archive from archive_id so we can say "archive.id" instead of "archive_id.id" on line 125
+    def create(self, archive):
+        if not archive:
             raise ValueError('Archive id is required')
 
-        url = 'http://0.0.0.0:8000/{}/'.format(uuid4())
+        # TODO - finalize URL name and edit download route and HTML based on final URL
+        url = 'http://localhost:8000/download/{}/{}/'.format(archive.id, uuid4())
 
-        link = self.model(url=url, archive_id=archive_id)
+        link = self.model(url=url, archive_id=archive)
 
         link.save(using=self._db)
         return link
