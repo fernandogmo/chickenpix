@@ -1,21 +1,9 @@
-<!-- templates/photos.html -->
+<!-- templates/upload.html -->
 {% extends 'base.html' %}
 
-{% block title %}Photos · {{ block.super }}{% endblock %}
+{% block title %}Upload · {{ block.super }}{% endblock %}
 
 {% block content %}
-<!-- "multipart/form-data" is necessary for the actual images to be uploaded, not just the file names -->
-  <form method="post" action="/upload/", enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>Select the files you would like to upload.
-    <input type="file" name="album" multiple="">
-    </p>
-    <p>Name your album.
-    <input type="text" name="title">
-    </p>
-    <p>Check this box if you want to make your album public. The default is private.
-    <input type="checkbox" name="is_private">
-    </p>
-    <button type="submit">Upload</button>
-  </form>
+  <p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
+  <p>{{ link.url }}</p>
 {% endblock %}
