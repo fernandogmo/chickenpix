@@ -8,14 +8,44 @@
   <form method="post" action="/photos/", enctype="multipart/form-data">
     {% csrf_token %}
     <p>Select the files you would like to upload.
-    <input type="file" name="album" multiple="">
+    <input type="file" class="form-control" name="album" multiple required autofocus>
     </p>
-    <p>Name your album.
-    <input type="text" name="title">
+    <input type="text" class="form-control" name="title" placeholder="Name your album" required>
+      <div class="checkbox my-3">
+        <label>
+        We make your albums private by default.<br>
+          <input type="checkbox" name="is_private">Make public
+        </label>
+      </div>
     </p>
-    <p>Check this box if you want to make your album public. The default is private.
-    <input type="checkbox" name="is_private">
-    </p>
-    <button type="submit">Upload</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Upload</button>
   </form>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
