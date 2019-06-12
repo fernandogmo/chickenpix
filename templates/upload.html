@@ -1,9 +1,51 @@
-<!-- templates/photos.html -->
+<!-- templates/upload.html -->
 {% extends 'base.html' %}
 
-{% block title %}Pixguise{% endblock %}
+{% block title %}Upload · {{ block.super }}{% endblock %}
 
 {% block content %}
-<H1>Pixguise</H1>
-  <p>{{ data }}</p>
+<!-- "multipart/form-data" is necessary for the actual images to be uploaded, not just the file names -->
+  <form method="post" action="/photos/", enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>Select the files you would like to upload.
+    <input type="file" class="form-control" name="album" multiple required autofocus>
+    </p>
+    <input type="text" class="form-control" name="title" placeholder="Name your album" required>
+      <div class="checkbox my-3">
+        <label>
+        We make your albums private by default.<br>
+          <input type="checkbox" name="is_private">Make public
+        </label>
+      </div>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Upload</button>
+  </form>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
