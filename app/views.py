@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from .forms import EmailForm, TokenForm
 from .validators import login_user
 from .models import Album, Photo, Archive, Link
 import requests
+import os
 
 def validate(request):
     """
@@ -94,14 +96,15 @@ def photos(request):
         thumbnails = Photo.objects.filter(albums=album)
         # Serve up page with link ready to be copied and pasted
         return redirect('/gallery/{}/{}'.format(album.id, archive.id))
-        # return render(request, 'gallery.html', {'link': link, 'thumbnails': thumbnails, 'title': album.title})
 
 def download(request, id, uuid):
     """
     Renders a page with a zip file available for download
     """
     archive = Archive.objects.get(pk=id)
-    return render(request, 'download.html', {'archive': archive})
+    filename = os.path.relpath(archive.filename, settings.MEDIA_ROOT)[9:]
+    album = Album.objects.get(archive_id=archive)
+    return render(request, 'download.html', {'archive_id': archive.id, 'filename': filename, 'album': album})
 
 def download_zip(request):
     """
