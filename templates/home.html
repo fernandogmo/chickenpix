@@ -4,18 +4,14 @@
 {% block title %}Home · {{ block.super }}{% endblock %}
 
 {% block content %}
-
-<!-- Replaced by navbar-brand
-<h2>Pixguise</h2>
--->
-{% if user.is_authenticated %}
-  <p>Hi {{ user.email }}!</p>
-{% else %}
-<p>{{ message }}</p>
-  <form method="post" action="/">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-{% endif %}
+  {% if user.is_authenticated %}
+    <p>Hi, {{ user.email }}!</p>
+  {% else %}
+    <p>{{ message }}</p>
+    <form method="post" action="/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+  {% endif %}
 {% endblock %}
