@@ -4,8 +4,10 @@
 {% block title %}Home · {{ block.super }}{% endblock %}
 
 {% block content %}
-<h1>Gallery</h1>
-{% for thumbnail in thumbnails %}
-  <div><img src="{{ MEDIA_URL }}{{ thumbnail.thumbnail.url }}"/></div>
+<h1>{{ album_title }}</h1>
+<p>Copy this link and send it to your friends. It will send them to a page where they can downl    oad a zip file containing all the photos you just uploaded.</p>
+<p>{{ link.url }}</p>
+{% for image in images %}
+  <div><img src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/></div>
 {% endfor %}
 {% endblock %}
