@@ -134,7 +134,7 @@ class ArchiveManager(models.Manager):
         with zipfile.ZipFile(filename, 'w') as archive:
             for photo in photos:
                 photo = os.path.join(settings.MEDIA_ROOT, photo)
-                archive.write(photo)
+                archive.write(photo, os.path.relpath(photo, settings.MEDIA_ROOT))
 
         archive = self.model(album_id=album_id, filename=filename)
 
