@@ -9,7 +9,7 @@
     <form method="post" action="/download/">
       {% csrf_token %}
       <input type="hidden" name="archive_id" value={{ archive.id }}>
-      <button type="submit">Download Zip File</a>
-    </form> 
+      <button class="btn btn-lg btn-primary" type="submit">Download</button>
+    </form>
   </p>
 {% endblock %}

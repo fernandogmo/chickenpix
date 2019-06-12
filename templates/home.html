@@ -5,13 +5,15 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    <p>Hi, {{ user.email }}!</p>
+    <h3>Hi, {{ user.email }}!</h3>
   {% else %}
     <p>{{ message }}</p>
     <form method="post" action="/">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Login</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Login
+      </button>
     </form>
   {% endif %}
 {% endblock %}

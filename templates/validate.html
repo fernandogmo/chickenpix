@@ -13,7 +13,7 @@
     <form method="post" action="/validate/">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Validate</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Validate</button>
     </form>
   {% endif %}
 {% endblock %}
