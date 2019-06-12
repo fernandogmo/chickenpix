@@ -4,6 +4,7 @@ from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
 from .forms import EmailForm, TokenForm
 from .validators import login_user
+from .models import Album, Photo, Archive, Link
 import requests
 
 def validate(request):
@@ -48,8 +49,8 @@ def validate(request):
 
 
 @login_required
-def photos(request):
-    return render(request, 'photos.html')
+def upload(request):
+    return render(request, 'upload.html')
 
 def home(request):
     """
@@ -76,5 +77,35 @@ def home(request):
                                          Please enter your email address to \
                                          receive a login token. No signup is required!'})
 
-def upload(request):
-    return render(request, 'upload.html', {'data': request.POST})
+def photos(request):
+    """
+    Creates album, photos, archive, and link
+    """
+    album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
+    # request.FILES has access to the actual files, request.POST just the image names - which is why ImageField wasn't actually saving the photos in the first place.
+    for image in request.FILES.getlist('album'):
+        Photo.objects.create(filename=image, albums=album)
+    archive = Archive.objects.create(album_id=album)
+    # Change name of resource passed into create based on rationale given in app/models.py
+    link = Link.objects.create(archive=archive)
+    # Serve up page with link ready to be copied and pasted
+    # TODO - jQuery or JS script to have a button to copy the link on click
+    return render(request, 'photos.html', {'link': link})
+
+def download(request, id, uuid):
+    """
+    Renders a page with a zip file available for download
+    """
+    archive = Archive.objects.get(id=id)
+    return render(request, 'download.html', {'archive': archive})
+
+def download_zip(request):
+    """
+    Downloads the zip file served as a resource
+    """
+    # "Fake" route that just serves the file to the user
+    file_path = Archive.objects.get(id=request.POST.get('archive_id')).filename
+    with open(file_path, 'rb') as zipfile:
+        response = HttpResponse(zipfile.read(), content_type='application/zip')
+        response['Content-Disposition'] = 'inline; filename=' + file_path
+    return response

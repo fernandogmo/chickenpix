@@ -3,12 +3,46 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="data:image/svg+xml;base64,
+  PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRw
+  Oi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9
+  IjAgMCA2NCA2NCI+PGc+PGcgc3R5bGU9ImZpbGw6I0ZGMDBCQiI+PHN2ZyBmaWxsPSIjRkYwMEJC
+  IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIg
+  dmlld0JveD0iMCAwIDEwMCAxMDAiIHg9IjBweCIgeT0iMHB4Ij48dGl0bGU+NTg8L3RpdGxlPjxn
+  IGRhdGEtbmFtZT0iR3JvdXAiPjxwYXRoIGRhdGEtbmFtZT0iQ29tcG91bmQgUGF0aCIgZD0iTTgz
+  LjUsMTJoLTY3YTEzLDEzLDAsMCwwLTEzLDEzVjc1YTEzLDEzLDAsMCwwLDEzLDEzaDY3YTEzLDEz
+  LDAsMCwwLDEzLTEzVjI1QTEzLDEzLDAsMCwwLDgzLjUsMTJabS02Nyw2aDY3YTcsNywwLDAsMSw3
+  LDd2OUg5LjVWMjVBNyw3LDAsMCwxLDE2LjUsMThabTY3LDY0aC02N2E3LDcsMCwwLDEtNy03VjQw
+  aDgxVjc1QTcsNywwLDAsMSw4My41LDgyWiI+PC9wYXRoPjxjaXJjbGUgZGF0YS1uYW1lPSJQYXRo
+  IiBjeD0iMzEuNSIgY3k9IjI2IiByPSI1Ij48L2NpcmNsZT48Y2lyY2xlIGRhdGEtbmFtZT0iUGF0
+  aCIgY3g9IjQ0LjUiIGN5PSIyNiIgcj0iNSI+PC9jaXJjbGU+PGNpcmNsZSBkYXRhLW5hbWU9IlBh
+  dGgiIGN4PSIxOC41IiBjeT0iMjYiIHI9IjUiPjwvY2lyY2xlPjxwYXRoIGRhdGEtbmFtZT0iQ29t
+  cG91bmQgUGF0aCIgZD0iTTYzLjgsNDkuMWExMC43LDEwLjcsMCwwLDAtMTMuOC0xLDEwLjcsMTAu
+  NywwLDAsMC0xMy44LDEsMTAuNSwxMC41LDAsMCwwLDAsMTQuOUw0Ny45LDc1LjFhMywzLDAsMCww
+  LDQuMSwwTDYzLjgsNjRhMTAuNSwxMC41LDAsMCwwLDAtMTQuOVpNNTkuNiw1OS43LDUwLDY4Ljhs
+  LTkuNi05LjFhNC41LDQuNSwwLDAsMSwwLTYuNCw0LjYsNC42LDAsMCwxLDYuNSwwbC42LjdhMywz
+  LDAsMCwwLDUsMGwuNi0uN2E0LjYsNC42LDAsMCwxLDYuNSwwLDQuNSw0LjUsMCwwLDEsMCw2LjNa
+  Ij48L3BhdGg+PC9nPjwvc3ZnPjwvZz48L2c+PC9zdmc+" rel="icon" type="image/x-icon">
+
+  <title>{% block title %}Pixguise{% endblock %}</title>
 </head>
-<body>
-  <main>
+<body style="color: rgb(218, 215, 210);
+	     background-color: rgb(24, 26, 27);">
+  <header>
+    {% include 'nav.html' %}
+  </header>
+  <main class="m-3">
     {% block content %}
     {% endblock %}
   </main>
+  <footer class="footer py-2" style="position:absolute;bottom:0;width:100%;background-color:#f5f5f5;">
+    <div class="container text-center">
+      <span class="text-muted">© 2019</span>
+    </div>
+  </footer>
 </body>
 </html>

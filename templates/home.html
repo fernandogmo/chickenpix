@@ -1,23 +1,19 @@
 <!-- templates/home.html -->
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home · {{ block.super }}{% endblock %}
 
 {% block content %}
-
-<h2>Pixguise</h2>
-{% if user.is_authenticated %}
-  <p>Hi {{ user.email }}!</p>
-  <p>
-    <a href="{% url 'logout' %}">Logout</a>
-    <a href="{% url 'photos' %}">Photos</a>
-  </p>
-{% else %}
-<p>{{ message }}</p>
-  <form method="post" action="/">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-{% endif %}
+  {% if user.is_authenticated %}
+    <h3>Hi, {{ user.email }}!</h3>
+  {% else %}
+    <p>{{ message }}</p>
+    <form method="post" action="/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Login
+      </button>
+    </form>
+  {% endif %}
 {% endblock %}
