@@ -4,17 +4,6 @@
 {% block title %}Photos · {{ block.super }}{% endblock %}
 
 {% block content %}
-  <form method="post" action="/upload/">
-    {% csrf_token %}
-    <p>Select the files you would like to upload.
-    <input type="file" name="album" multiple="">
-    </p>
-    <p>Name your album.
-    <input type="text" name="title">
-    </p>
-    <p>Check this box if you want to make your album public. The default is private.
-    <input type="checkbox" name="is_private">
-    </p>
-    <button type="submit">Upload</button>
-  </form>
+  <p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
+  <p>{{ link.url }}</p>
 {% endblock %}

@@ -1,0 +1,15 @@
+<!-- templates/download.html -->
+{% extends 'base.html' %}
+
+{% block title %}Download · {{ block.super }}{% endblock %}
+
+{% block content %}
+  <p>
+    {{ archive.filename }}
+    <form method="post" action="/download/">
+      {% csrf_token %}
+      <input type="hidden" name="archive_id" value={{ archive.id }}>
+      <button type="submit">Download Zip File</a>
+    </form> 
+  </p>
+{% endblock %}
