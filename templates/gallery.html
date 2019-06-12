@@ -6,6 +6,6 @@
 {% block content %}
 <h1>Gallery</h1>
 {% for thumbnail in thumbnails %}
-  <div><img src="{{ thumbnail.thumbnail }}"/></div>
+  <div><img src="{{ MEDIA_URL }}{{ thumbnail.thumbnail.url }}"/></div>
 {% endfor %}
 {% endblock %}
