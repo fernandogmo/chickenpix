@@ -10,6 +10,7 @@ drfpasswordless = "*"
 requests = "*"
 django = "*"
 djangorestframework = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.6"
