@@ -81,24 +81,26 @@ def photos(request):
     """
     Creates album, photos, archive, and link
     """
-    if Album.objects.get(owner_id=request.user, title=request.POST.get('title', '')):
+    try:
+        Album.objects.get(owner_id=request.user, title=request.POST.get('title', ''))
         return render(request, 'upload.html', {'message': 'You already have another album with this title. Please try again with another title.'})
-    album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
-    # request.FILES has access to the actual files, request.POST just the image names - which is why ImageField wasn't actually saving the photos in the first place.
-    for image in request.FILES.getlist('album'):
-        Photo.objects.create(filename=image, albums=album)
-    archive = Archive.objects.create(album_id=album)
-    # Change name of resource passed into create based on rationale given in app/models.py
-    link = Link.objects.create(archive=archive)
-    # Serve up page with link ready to be copied and pasted
-    # TODO - jQuery or JS script to have a button to copy the link on click
-    return render(request, 'photos.html', {'link': link})
+    except Album.DoesNotExist:
+        album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
+        for image in request.FILES.getlist('album'):
+            Photo.objects.create(filename=image, albums=album)
+        archive = Archive.objects.create(album_id=album)
+        album.add_archive(archive)
+        link = Link.objects.create(archive=archive)
+        thumbnails = Photo.objects.filter(albums=album)
+        # Serve up page with link ready to be copied and pasted
+        return redirect('/gallery/{}/{}'.format(album.id, archive.id))
+        # return render(request, 'gallery.html', {'link': link, 'thumbnails': thumbnails, 'title': album.title})
 
 def download(request, id, uuid):
     """
     Renders a page with a zip file available for download
     """
-    archive = Archive.objects.get(id=id)
+    archive = Archive.objects.get(pk=id)
     return render(request, 'download.html', {'archive': archive})
 
 def download_zip(request):
@@ -121,9 +123,11 @@ def albums(request):
     return render(request, 'albums.html', {'albums': albums})
 
 @login_required
-def gallery(request, album_id):
+def gallery(request, album_id, archive_id):
     """
     Displays a grid of pictures in a specific album
     """
     thumbnails = Photo.objects.filter(albums=album_id)
-    return render(request, 'gallery.html', {'thumbnails': thumbnails})
+    link = Link.objects.get(archive_id=archive_id)
+    album_title = Album.objects.get(pk=album_id).title
+    return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album_title': album_title})
