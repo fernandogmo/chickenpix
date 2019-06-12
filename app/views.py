@@ -109,3 +109,19 @@ def download_zip(request):
         response = HttpResponse(zipfile.read(), content_type='application/zip')
         response['Content-Disposition'] = 'inline; filename=' + file_path
     return response
+
+@login_required
+def albums(request):
+    """
+    Displays a list of albums associated with logged in user.
+    """
+    albums = Album.objects.filter(owner_id=request.user)
+    return render(request, 'albums.html', {'albums': albums})
+
+@login_required
+def gallery(request, album_id):
+    """
+    Displays a grid of pictures in a specific album
+    """
+    thumbnails = Photo.objects.filter(albums=album_id)
+    return render(request, 'gallery.html', {'thumbnails': thumbnails})
