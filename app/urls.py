@@ -15,4 +15,6 @@ urlpatterns = [
         # "Hidden" view that doesn't send user to any HTML page - just serves the zip file for download
         path('download/', views.download_zip, name='download_zip'),
         # path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
+        path('albums/', views.albums, name='albums'),
+        path('gallery/<int:album_id>', views.gallery, name='gallery'),
 ]
