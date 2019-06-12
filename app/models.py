@@ -84,11 +84,11 @@ class PhotoManager(models.Manager):
 
 class Photo(Base):
     # TODO: Figure out filepath. Currently this saves to uploads/uploads - we just want it to save to uploads/ - until we figure out S3 - when we will change the MEDIA_ROOT to s3.
-    filename = models.ImageField(upload_to=settings.MEDIA_ROOT, default='lol.jpg')
+    filename = models.ImageField(upload_to='photos/', default='image.jpg')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     # TODO: change to ManyToManyField and revert to non-nullable
     albums = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
-    thumbnail = models.ImageField(upload_to=settings.MEDIA_ROOT, default='thumbnail.jpg')
+    thumbnail = models.ImageField(upload_to='thumbnails/', default='thumbnail.jpg')
     # albums = models.ManyToManyField(Album)
     # cloud_photo_link = models.URLField(unique=True)
     def save(self, *args, **kwargs):
