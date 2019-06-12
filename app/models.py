@@ -5,6 +5,7 @@ from django.core.validators import RegexValidator
 from uuid import uuid4
 from django.conf import settings
 import zipfile
+import os
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                              message="Mobile number must be entered in the format:"
@@ -92,8 +93,7 @@ class ArchiveManager(models.Manager):
         if not album_id:
             raise ValueError('Album id is required')
 
-        # TODO - change from absolute path to relative path
-        filename = '/home/vagrant/pixguise/uploads/zipfiles/{}.zip'.format(uuid4())
+        filename = os.path.join(settings.MEDIA_ROOT, 'zipfiles/{}.zip'.format(uuid4()))
 
         # Get a list of all filenames where album id matches the requested album
         photos = Photo.objects.filter(albums=album_id).values_list('filename', flat=True)
@@ -101,7 +101,7 @@ class ArchiveManager(models.Manager):
         # Compress all photos into one zip file
         with zipfile.ZipFile(filename, 'w') as archive:
             for photo in photos:
-                photo = '/home/vagrant/pixguise/uploads/' + photo
+                photo = os.path.join(settings.MEDIA_ROOT, photo)
                 archive.write(photo)
 
         archive = self.model(album_id=album_id, filename=filename)
