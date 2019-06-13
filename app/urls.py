@@ -1,6 +1,7 @@
 from django.urls import path, include
 # from django.views.generic.base import RedirectView
-# from django.conf import settings
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -15,4 +16,8 @@ urlpatterns = [
         # "Hidden" view that doesn't send user to any HTML page - just serves the zip file for download
         path('download/', views.download_zip, name='download_zip'),
         # path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
+        path('albums/', views.albums, name='albums'),
+        path('gallery/<int:album_id>/<int:archive_id>', views.gallery, name='gallery'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
