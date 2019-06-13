@@ -10,7 +10,9 @@
 <p>{{ link.url }}</p>
 {% for image in images %}
   <div class="m-1">
-    <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
+    <a href="/photo/{{ image.id }}">
+      <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
+    </a>
   </div>
 {% endfor %}
 </div>
