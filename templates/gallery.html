@@ -5,10 +5,12 @@
 
 {% block content %}
 <div class="my-3">
-<h1>Gallery</h1>
-{% for thumbnail in thumbnails %}
+<h1>{{ album_title }}</h1>
+<p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
+<p>{{ link.url }}</p>
+{% for image in images %}
   <div class="m-1">
-    <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ thumbnail.thumbnail.url }}"/>
+    <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
   </div>
 {% endfor %}
 </div>
