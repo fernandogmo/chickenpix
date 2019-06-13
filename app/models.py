@@ -62,8 +62,12 @@ class AlbumManager(models.Manager):
 class Album(Base):
     title = models.CharField(max_length=100, null=True)
     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE)
+    archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE, null=True)
     is_private = models.BooleanField(default=True)
+
+    def add_archive(self, archive):
+        self.archive_id = archive
+        self.save()
 
 class PhotoManager(models.Manager):
     """ Naive manager. """
@@ -132,11 +136,13 @@ class ArchiveManager(models.Manager):
         with zipfile.ZipFile(filename, 'w') as archive:
             for photo in photos:
                 photo = os.path.join(settings.MEDIA_ROOT, photo)
-                archive.write(photo)
+                archive.write(photo, os.path.relpath(photo, settings.MEDIA_ROOT))
 
         archive = self.model(album_id=album_id, filename=filename)
 
         archive.save(using=self._db)
+
+
         return archive
 
 class Archive(Base):

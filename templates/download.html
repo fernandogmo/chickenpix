@@ -4,11 +4,12 @@
 {% block title %}Download · {{ block.super }}{% endblock %}
 
 {% block content %}
+  <h2>Download Photos</h2>
   <p>
-    {{ archive.filename }}
+    {{ filename }} contains all the photos in <b>{{ album.title }}</b> uploaded by <b>{{ album.owner_id.email }}</b>.
     <form method="post" action="/download/">
       {% csrf_token %}
-      <input type="hidden" name="archive_id" value={{ archive.id }}>
+      <input type="hidden" name="archive_id" value={{ archive_id }}>
       <button class="btn btn-lg btn-primary" type="submit">Download</button>
     </form>
   </p>

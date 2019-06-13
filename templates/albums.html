@@ -6,6 +6,6 @@
 {% block content %}
 <h1>Your Albums</h1>
 {% for album in albums %}
-  <p><a href="/gallery/{{ album.id }}"">{{ album.title }}</a></p>
+  <p><a href="/gallery/{{ album.id }}/{{ album.archive_id.id }}"">{{ album.title }}</a></p>
 {% endfor %}
 {% endblock %}
