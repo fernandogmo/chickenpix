@@ -4,8 +4,12 @@
 {% block title %}Home · {{ block.super }}{% endblock %}
 
 {% block content %}
+<div class="my-3">
 <h1>Gallery</h1>
 {% for thumbnail in thumbnails %}
-  <div><img src="{{ MEDIA_URL }}{{ thumbnail.thumbnail.url }}"/></div>
+  <div class="m-1">
+    <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ thumbnail.thumbnail.url }}"/>
+  </div>
 {% endfor %}
+</div>
 {% endblock %}
