@@ -24,7 +24,7 @@ def validate(request):
     if request.method == 'GET':
         # Render page with empty form
         form = TokenForm()
-        message = request.session['_message']
+        message = request.session.get('_message', "You haven't entered an email.")
     elif request.method == 'POST':
         # Initialize TokenForm instance with POSTed 6-digit token
         form = TokenForm(request.POST)
