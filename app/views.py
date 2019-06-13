@@ -151,7 +151,7 @@ def tag_users(request):
     try:
         user = CustomUser.objects.get(email=request.POST.get('users', ''))
         photo.users.add(user)
-    message = "User(s) successfully tagged. Tag more users or go back to the album view"
+        message = "User(s) successfully tagged. Tag more users or go back to the album view"
     except CustomUser.DoesNotExist:
         message = "User(s) do not have an account with us. Tag unsuccessful. If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."
     return render(request, 'photo.html', {'message': message, 'photo': photo})
