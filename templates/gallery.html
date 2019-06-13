@@ -5,12 +5,12 @@
 
 {% block content %}
 <div class="my-3">
-<h1>{{ album_title }}</h1>
+<h1>{{ album.title }}</h1>
 <p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
 <p>{{ link.url }}</p>
 {% for image in images %}
   <div class="m-1">
-    <a href="/photo/{{ image.id }}">
+    <a href="/photo/{{ album.id }}/{{ image.id }}">
       <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
     </a>
   </div>

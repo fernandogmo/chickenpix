@@ -4,7 +4,7 @@
 {% block title %}Photo · {{ block.super }}{% endblock %}
 
 {% block content %}
-  <a href="/gallery/{{ photo.albums.id }}/{{ photo.albums.archive_id.id }}">Back to Gallery</a>
+  <a href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">Back to Gallery</a>
   {% if message %}
     <p>{{ message }}</p>
   {% endif %}
@@ -16,6 +16,12 @@
       <input type="text" class="form-control" name="users" placeholder="Tag users using their email addresses.">
     </label>
     <input type="hidden" name="photo_id" value={{ photo.id }}>
+    <input type="hidden" name="album_id" value={{ album.id }}>
     <button class="btn btn-log btn-primary btn-block" type="submit">Tag Users</button>
   </form>
+  {% if tagged_users %}
+    {% for user in tagged_users %}
+      <p>{{ user.email }}</p>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
