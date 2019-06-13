@@ -5,9 +5,9 @@
 
 {% block content %}
 <h1>{{ album_title }}</h1>
-<p>Copy this link and send it to your friends. It will send them to a page where they can downl    oad a zip file containing all the photos you just uploaded.</p>
+<p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
 <p>{{ link.url }}</p>
 {% for image in images %}
-  <div><img src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/></div>
+  <div><a href="/photo/{{ image.id }}"><img src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/></a></div>
 {% endfor %}
 {% endblock %}
