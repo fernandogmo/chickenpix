@@ -6,7 +6,9 @@
 {% block content %}
   {% if user.is_authenticated %}
     <h1>Hi, {{ user.email }}!</h1>
+    {% include 'testimonial.html' %}
   {% else %}
+    {% include 'testimonial.html' %}
     <p>{{ message }}</p>
     <form method="post" action="/">
       {% csrf_token %}
