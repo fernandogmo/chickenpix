@@ -132,4 +132,5 @@ EMAIL_PORT = 1025
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Photo upload and download
-MEDIA_ROOT = 'uploads/'
+MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'media'))
+MEDIA_URL = "/media/"

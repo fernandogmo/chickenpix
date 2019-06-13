@@ -6,6 +6,9 @@ from uuid import uuid4
 from django.conf import settings
 import zipfile
 import os
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                              message="Mobile number must be entered in the format:"
@@ -59,8 +62,12 @@ class AlbumManager(models.Manager):
 class Album(Base):
     title = models.CharField(max_length=100, null=True)
     owner_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE)
+    archive_id = models.ForeignKey('app.Archive', on_delete=models.CASCADE, null=True)
     is_private = models.BooleanField(default=True)
+
+    def add_archive(self, archive):
+        self.archive_id = archive
+        self.save()
 
 class PhotoManager(models.Manager):
     """ Naive manager. """
@@ -75,18 +82,45 @@ class PhotoManager(models.Manager):
             raise ValueError('Link is required')
 
         photo = self.model(filename=filename,
-                users=users)
+                           users=users)
         photo.save(using=self._db)
         return photo
 
 class Photo(Base):
     # TODO: Figure out filepath. Currently this saves to uploads/uploads - we just want it to save to uploads/ - until we figure out S3 - when we will change the MEDIA_ROOT to s3.
-    filename = models.ImageField(upload_to=settings.MEDIA_ROOT, default='None/lol.jpg')
+    filename = models.ImageField(upload_to='photos/', default='image.jpg')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     # TODO: change to ManyToManyField and revert to non-nullable
     albums = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', default='thumbnail.jpg')
     # albums = models.ManyToManyField(Album)
     # cloud_photo_link = models.URLField(unique=True)
+    def save(self, *args, **kwargs):
+        if not self.create_thumbnail():
+            raise Exception('Invalid file type')
+        super(Photo, self).save(*args, **kwargs)
+
+    def create_thumbnail(self):
+        thumbnail_name, thumbnail_extension = os.path.splitext(self.filename.name)
+        thumbnail_extension = thumbnail_extension.lower()
+        if thumbnail_extension in ['.jpg', '.jpeg']:
+            FTYPE = 'JPEG'
+        elif thumbnail_extension == '.gif':
+            FTYPE = 'GIF'
+        elif thumbnail_extension == '.png':
+            FTYPE = 'PNG'
+        elif thumbnail_extension == '.bmp':
+            FTYPE = 'BMP'
+        else:
+            return False
+        image = Image.open(self.filename)
+        image.thumbnail((400, 400))
+        temp_thumbnail = BytesIO()
+        image.save(temp_thumbnail, FTYPE)
+        temp_thumbnail.seek(0)
+        self.thumbnail.save('{}_thumbnail{}'.format(thumbnail_name, thumbnail_extension), ContentFile(temp_thumbnail.read()), save=False)
+        temp_thumbnail.close()
+        return True
 
 class ArchiveManager(models.Manager):
     def create(self, album_id):
@@ -102,11 +136,13 @@ class ArchiveManager(models.Manager):
         with zipfile.ZipFile(filename, 'w') as archive:
             for photo in photos:
                 photo = os.path.join(settings.MEDIA_ROOT, photo)
-                archive.write(photo)
+                archive.write(photo, os.path.relpath(photo, settings.MEDIA_ROOT))
 
         archive = self.model(album_id=album_id, filename=filename)
 
         archive.save(using=self._db)
+
+
         return archive
 
 class Archive(Base):

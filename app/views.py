@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from .forms import EmailForm, TokenForm
 from .validators import login_user
 from .models import Album, Photo, Archive, Link
 import requests
+import os
 
 def validate(request):
     """
@@ -22,7 +24,7 @@ def validate(request):
     if request.method == 'GET':
         # Render page with empty form
         form = TokenForm()
-        message = request.session['_message']
+        message = request.session.get('_message', "You haven't entered an email.")
     elif request.method == 'POST':
         # Initialize TokenForm instance with POSTed 6-digit token
         form = TokenForm(request.POST)
@@ -81,23 +83,28 @@ def photos(request):
     """
     Creates album, photos, archive, and link
     """
-    album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
-    # request.FILES has access to the actual files, request.POST just the image names - which is why ImageField wasn't actually saving the photos in the first place.
-    for image in request.FILES.getlist('album'):
-        Photo.objects.create(filename=image, albums=album)
-    archive = Archive.objects.create(album_id=album)
-    # Change name of resource passed into create based on rationale given in app/models.py
-    link = Link.objects.create(archive=archive)
-    # Serve up page with link ready to be copied and pasted
-    # TODO - jQuery or JS script to have a button to copy the link on click
-    return render(request, 'photos.html', {'link': link})
+    try:
+        Album.objects.get(owner_id=request.user, title=request.POST.get('title', ''))
+        return render(request, 'upload.html', {'message': 'You already have another album with this title. Please try again with another title.'})
+    except Album.DoesNotExist:
+        album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
+        for image in request.FILES.getlist('album'):
+            Photo.objects.create(filename=image, albums=album)
+        archive = Archive.objects.create(album_id=album)
+        album.add_archive(archive)
+        link = Link.objects.create(archive=archive)
+        thumbnails = Photo.objects.filter(albums=album)
+        # Serve up page with link ready to be copied and pasted
+        return redirect('/gallery/{}/{}'.format(album.id, archive.id))
 
 def download(request, id, uuid):
     """
     Renders a page with a zip file available for download
     """
-    archive = Archive.objects.get(id=id)
-    return render(request, 'download.html', {'archive': archive})
+    archive = Archive.objects.get(pk=id)
+    filename = os.path.relpath(archive.filename, settings.MEDIA_ROOT)[9:]
+    album = Album.objects.get(archive_id=archive)
+    return render(request, 'download.html', {'archive_id': archive.id, 'filename': filename, 'album': album})
 
 def download_zip(request):
     """
@@ -109,3 +116,21 @@ def download_zip(request):
         response = HttpResponse(zipfile.read(), content_type='application/zip')
         response['Content-Disposition'] = 'inline; filename=' + file_path
     return response
+
+@login_required
+def albums(request):
+    """
+    Displays a list of albums associated with logged in user.
+    """
+    albums = Album.objects.filter(owner_id=request.user)
+    return render(request, 'albums.html', {'albums': albums})
+
+@login_required
+def gallery(request, album_id, archive_id):
+    """
+    Displays a grid of pictures in a specific album
+    """
+    thumbnails = Photo.objects.filter(albums=album_id)
+    link = Link.objects.get(archive_id=archive_id)
+    album_title = Album.objects.get(pk=album_id).title
+    return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album_title': album_title})
