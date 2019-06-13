@@ -109,6 +109,8 @@ class Photo(Base):
             FTYPE = 'GIF'
         elif thumbnail_extension == '.png':
             FTYPE = 'PNG'
+        elif thumbnail_extension == '.bmp':
+            FTYPE = 'BMP'
         else:
             return False
         image = Image.open(self.filename)
