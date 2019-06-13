@@ -105,11 +105,8 @@ class PhotoManager(models.Manager):
     def create(self, filename, albums):
         if not filename:
             raise ValueError('Filename is required')
-        if not albums:
-            raise ValueError('Albums is required')
 
-        photo = self.model(filename=filename,
-                           albums=albums)
+        photo = self.model(filename=filename)
         photo.save(using=self._db)
         return photo
 
@@ -122,11 +119,7 @@ class Photo(Base):
     filename = models.ImageField(upload_to='photos/',
                                  default='image.jpg')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    # TODO: change to ManyToManyField and revert to non-nullable
-    albums = models.ForeignKey(Album,
-                               on_delete=models.CASCADE,
-                               null=True)
-    # albums = models.ManyToManyField(Album)
+    albums = models.ManyToManyField(Album)
     thumbnail = models.ImageField(upload_to='thumbnails/',
                                   default='thumbnail.jpg')
 
