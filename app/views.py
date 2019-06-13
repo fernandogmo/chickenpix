@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .forms import EmailForm, TokenForm
 from .validators import login_user
-from .models import Album, Photo, Archive, Link
+from .models import Album, Photo, Archive, Link, CustomUser
 import requests
 import os
 
@@ -125,7 +125,6 @@ def albums(request):
     albums = Album.objects.filter(owner_id=request.user)
     return render(request, 'albums.html', {'albums': albums})
 
-@login_required
 def gallery(request, album_id, archive_id):
     """
     Displays a grid of pictures in a specific album
@@ -134,3 +133,25 @@ def gallery(request, album_id, archive_id):
     link = Link.objects.get(archive_id=archive_id)
     album_title = Album.objects.get(pk=album_id).title
     return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album_title': album_title})
+
+def photo(request, photo_id):
+    """
+    Displays photo in full resolution
+    and a form where users can tag other users.
+    """
+    photo = Photo.objects.get(pk=photo_id)
+    return render(request, 'photo.html', {'photo': photo})
+
+def tag_users(request):
+    """
+    Tags users by adding them to Photo object's
+    users field
+    """
+    photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
+    try:
+        user = CustomUser.objects.get(email=request.POST.get('users', ''))
+        photo.users.add(user)
+    message = "User(s) successfully tagged. Tag more users or go back to the album view"
+    except CustomUser.DoesNotExist:
+        message = "User(s) do not have an account with us. Tag unsuccessful. If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."
+    return render(request, 'photo.html', {'message': message, 'photo': photo})
