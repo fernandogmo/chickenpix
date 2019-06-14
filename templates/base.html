@@ -57,6 +57,10 @@
 	    top: 0;
 	}
 
+	nav.bg-dark {
+            background-image: linear-gradient(180deg, #1b2024cc, transparent, transparent, transparent, transparent, transparent, transparent, transparent);
+	}
+
 	.footer {
 	    width: 100%;
 	    position: fixed;
@@ -82,8 +86,12 @@
     <h1 class="display-4">
       {% block heading %}{% endblock %}
     </h1>
+    <div class="container">
+    <div class="col-sm-8 offset-sm-2">
     {% block content %}
     {% endblock %}
+    </div>
+    </div>
   </main>
   <footer class="footer py-2 bg-dark">
     <div class="container text-center">
