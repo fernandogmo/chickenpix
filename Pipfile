@@ -11,6 +11,7 @@ requests = "*"
 django = "*"
 djangorestframework = "*"
 pillow = "*"
+python-decouple = "*"
 
 [requires]
 python_version = "3.6"

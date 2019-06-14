@@ -11,16 +11,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '***REMOVED***'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,14 +80,8 @@ TEMPLATES = [
     },
 ]
 
-PASSWORDLESS_AUTH = {
-        'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
-        'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
-        'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'allisonjoyweiner@gmail.com',
-}
 
 WSGI_APPLICATION = 'oursite.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -100,8 +94,14 @@ DATABASES = {
 }
 
 
-# Password validation
+# User and Password Validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+
+PASSWORDLESS_AUTH = {
+    'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
+    'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
+    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': config('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS'),
+}
 
 AUTH_USER_MODEL = 'app.CustomUser'
 
@@ -126,11 +126,19 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL= 'home'
 
-# Email backend for development
-EMAIL_HOST = '127.0.0.1'
-EMAIL_PORT = 1025
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # Photo upload and download
 MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = "/media/"
+
+# Email backend for development
+if DEBUG == True:
+    EMAIL_HOST = '127.0.0.1'
+    EMAIL_PORT = 1025
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email backend for production
+else:
+    EMAIL_USE_TLS = True
+    EMAIL_HOST = config('EMAIL_HOST')
+    EMAIL_PORT = config('EMAIL_PORT', cast=int)
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
