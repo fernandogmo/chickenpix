@@ -5,17 +5,20 @@
 
 {% block content %}
   <a href="/gallery/{{ photo.albums.id }}/{{ photo.albums.archive_id.id }}">Back to Gallery</a>
+  <div class="my-1">
+    <img class="img-fluid rounded" src="{{ MEDIA_URL }}{{ photo.filename.url }}"/>
+  </div>
   {% if message %}
-    <p>{{ message }}</p>
+    <div class="my-3 alert alert-{{alert}}" role="alert">
+      {{ message|join:"<hr>" }}
+    </div>
   {% endif %}
-  <div><img src="{{ MEDIA_URL }}{{ photo.filename.url }}"/></div>
   <form method="post" action="/tag_users/">
     {% csrf_token %}
-    <label>
-      Only users who have an account with us can be tagged.<br>
-      <input type="text" class="form-control" name="users" placeholder="Tag users using their email addresses.">
-    </label>
-    <input type="hidden" name="photo_id" value={{ photo.id }}>
+    <p>
+      <input type="text" class="form-control" name="users" placeholder="Tag existing users using their email addresses." required autofocus>
+    </p>
+    <input type="hidden" class="form-control" name="photo_id" value={{ photo.id }}>
     <button class="btn btn-log btn-primary btn-block" type="submit">Tag Users</button>
   </form>
 {% endblock %}

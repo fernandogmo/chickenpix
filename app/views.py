@@ -147,12 +147,19 @@ def tag_users(request):
     Tags users by adding them to Photo object's
     users field
     """
+    # The `alert` str variable is used to set Bootstrap alert class for message
+    alert, message = "info", ["You shouldn't see this message. Please, let us know if you did."]
     photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
     try:
-        for email in request.POST.get('users', '').split():
-            user = CustomUser.objects.get(email=email)
-            photo.users.add(user)
-        message = "User(s) successfully tagged. Tag more users or go back to the album view"
+        import re
+        emails = [*filter(None, re.split("[, ]", request.POST.get('users', '')))]
+        if emails:
+            for email in emails:
+                user = CustomUser.objects.get(email=email)
+                photo.users.add(user)
+            alert, message = "success", ["User(s) successfully tagged. Tag more users or go back to the album view."]
+        else:
+            alert, message = "warning", ["Please enter a user email to tag them."]
     except CustomUser.DoesNotExist:
-        message = "User(s) do not have an account with us. Tag unsuccessful. If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."
-    return render(request, 'photo.html', {'message': message, 'photo': photo})
+        alert, message = "danger", ["User(s) do not have an account with us. Tag unsuccessful.", "If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."]
+    return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo})
