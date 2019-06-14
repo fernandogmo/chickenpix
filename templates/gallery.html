@@ -4,7 +4,7 @@
 {% block title %}Gallery · {{ block.super }}{% endblock %}
 
 {% block heading %}
-  {{ album_title }}
+  {{ album.title }}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 <p>{{ link.url }}</p>
 {% for image in images %}
   <div class="m-1">
-    <a href="/photo/{{ image.id }}">
+    <a href="/photo/{{ album.id }}/{{ image.id }}">
       <img class="img-fluid img-thumbnail" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
     </a>
   </div>
