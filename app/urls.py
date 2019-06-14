@@ -18,8 +18,9 @@ urlpatterns = [
         # path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
         path('albums/', views.albums, name='albums'),
         path('gallery/<int:album_id>/<int:archive_id>', views.gallery, name='gallery'),
-        path('photo/<int:photo_id>', views.photo, name='photo'),
+        path('photo/<int:album_id>/<int:photo_id>', views.photo, name='photo'),
         path('tag_users/', views.tag_users, name='tag_users'),
+        path('tagged_album/', views.tagged_album, name='tagged_album'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

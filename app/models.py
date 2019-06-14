@@ -100,18 +100,17 @@ class Album(Base):
         self.archive_id = archive
         self.save()
 
+
 class PhotoManager(models.Manager):
     """ Naive manager. """
     def create(self, filename, albums):
         if not filename:
             raise ValueError('Filename is required')
-        if not albums:
-            raise ValueError('Albums is required')
 
-        photo = self.model(filename=filename,
-                           albums=albums)
+        photo = self.model(filename=filename)
         photo.save(using=self._db)
         return photo
+
 
 class Photo(Base):
     """
@@ -122,11 +121,7 @@ class Photo(Base):
     filename = models.ImageField(upload_to='photos/',
                                  default='image.jpg')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    # TODO: change to ManyToManyField and revert to non-nullable
-    albums = models.ForeignKey(Album,
-                               on_delete=models.CASCADE,
-                               null=True)
-    # albums = models.ManyToManyField(Album)
+    albums = models.ManyToManyField(Album)
     thumbnail = models.ImageField(upload_to='thumbnails/',
                                   default='thumbnail.jpg')
 
@@ -167,6 +162,7 @@ class Photo(Base):
         temp_thumbnail.close()
         return True
 
+
 class ArchiveManager(models.Manager):
     """
     Manager for Archive objects - creates zip archive
@@ -200,6 +196,7 @@ class ArchiveManager(models.Manager):
         archive.save(using=self._db)
         return archive
 
+
 class Archive(Base):
     """
     Class for archive objects containing
@@ -210,6 +207,7 @@ class Archive(Base):
                                  on_delete=models.CASCADE)
 
     objects = ArchiveManager()
+
 
 class LinkManager(models.Manager):
     """
@@ -229,6 +227,7 @@ class LinkManager(models.Manager):
         link = self.model(url=url, archive_id=archive)
         link.save(using=self._db)
         return link
+
 
 class Link(Base):
     """

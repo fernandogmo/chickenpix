@@ -8,25 +8,17 @@ In order to share pictures of events with others, we often have to sacrifice som
 - Python (3.6+)
 - Django (2.0+)
 - Django Rest Framework + AuthToken (3.6+)
-- drfpasswordless
-- requests
-- pillow
+- pipenv 
 
 ## Tech/framework used :floppy_disk:
-[Python](https://docs.python.org/3/)
-
-[Django](https://docs.djangoproject.com/en/2.2/)
-
-[Django REST Framework](https://www.django-rest-framework.org/)
-
-[drfpasswordless](https://github.com/aaronn/django-rest-framework-passwordless)
-
-[requests](https://2.python-requests.org/en/master/)
-
-[pillow](https://pillow.readthedocs.io/en/stable/)
-
-[sqlite](https://sqlite.org/docs.html)
-
+- [Python](https://docs.python.org/3/)
+- [Django](https://docs.djangoproject.com/en/2.2/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [drfpasswordless](https://github.com/aaronn/django-rest-framework-passwordless)
+- [requests](https://2.python-requests.org/en/master/)
+- [pillow](https://pillow.readthedocs.io/en/stable/)
+- [sqlite](https://sqlite.org/docs.html)
+- [python-decouple](https://pypi.org/project/python-decouple/)
 ## Screenshots :framed_picture:
 TODO: Include screenshots of our app
 
@@ -39,22 +31,25 @@ apt-get install django
 ```
 pip3 install pipenv
 ```
-3) Install libraries using pipenv - TODO: CHANGE THIS TO A SCRIPT
-```
-pipenv install drfpasswordless
-pipenv install requests
-pipenv install pillow
-```
-4) Clone our repo
+3) Clone our repo
 ```
 git clone git@github.com:fgonza52/pixguise.git
 ```
-5) Make django database migrations
+4) Go into your project directory and enter the pipenv shell
+```
+pipenv shell
+```
+5) Install required libraries using pipenv
+```
+pipenv install --dev
+```
+6) Make django database migrations
 ```
 python3 manage.py makemigrations
 python3 manage.py migrate
 ```
-6) Run server using django
+6) Create .env file - look at `.env.example` file for inspiration - and insert the necessary variables. 
+7) Run server using django
 ```
 python3 manage.py runserver
 ```

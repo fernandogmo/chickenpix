@@ -9,6 +9,7 @@ from .models import Album, Photo, Archive, Link, CustomUser
 import requests
 import os
 
+
 def validate(request):
     """
     Validates the 6-digit callback token sent to user
@@ -52,7 +53,11 @@ def validate(request):
 
 @login_required
 def upload(request):
+    """
+    Renders a page with a photo upload form
+    """
     return render(request, 'upload.html')
+
 
 def home(request):
     """
@@ -79,6 +84,7 @@ def home(request):
                                          Please enter your email address to \
                                          receive a login token. No signup is required!'})
 
+
 def photos(request):
     """
     Creates album, photos, archive, and link
@@ -89,13 +95,15 @@ def photos(request):
     except Album.DoesNotExist:
         album = Album.objects.create(owner_id=request.user, title=request.POST.get('title', ''))
         for image in request.FILES.getlist('album'):
-            Photo.objects.create(filename=image, albums=album)
+            photo = Photo.objects.create(filename=image)
+            photo.albums.add(album)
         archive = Archive.objects.create(album_id=album)
         album.add_archive(archive)
         link = Link.objects.create(archive=archive)
         thumbnails = Photo.objects.filter(albums=album)
         # Serve up page with link ready to be copied and pasted
         return redirect('/gallery/{}/{}'.format(album.id, archive.id))
+
 
 def download(request, id, uuid):
     """
@@ -105,6 +113,7 @@ def download(request, id, uuid):
     filename = os.path.relpath(archive.filename, settings.MEDIA_ROOT)[9:]
     album = Album.objects.get(archive_id=archive)
     return render(request, 'download.html', {'archive_id': archive.id, 'filename': filename, 'album': album})
+
 
 def download_zip(request):
     """
@@ -117,6 +126,7 @@ def download_zip(request):
         response['Content-Disposition'] = 'inline; filename=' + file_path
     return response
 
+
 @login_required
 def albums(request):
     """
@@ -125,22 +135,27 @@ def albums(request):
     albums = Album.objects.filter(owner_id=request.user)
     return render(request, 'albums.html', {'albums': albums})
 
+
 def gallery(request, album_id, archive_id):
     """
     Displays a grid of pictures in a specific album
     """
-    thumbnails = Photo.objects.filter(albums=album_id)
+    album = Album.objects.get(pk=album_id)
+    thumbnails = album.photo_set.all()
     link = Link.objects.get(archive_id=archive_id)
-    album_title = Album.objects.get(pk=album_id).title
-    return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album_title': album_title})
+    return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album': album})
 
-def photo(request, photo_id):
+
+def photo(request, album_id, photo_id):
     """
     Displays photo in full resolution
     and a form where users can tag other users.
     """
     photo = Photo.objects.get(pk=photo_id)
-    return render(request, 'photo.html', {'photo': photo})
+    album = Album.objects.get(pk=album_id)
+    tagged_users = photo.users.all()
+    return render(request, 'photo.html', {'photo': photo, 'tagged_users': tagged_users, 'album': album})
+
 
 def tag_users(request):
     """
@@ -150,6 +165,8 @@ def tag_users(request):
     # The `alert` str variable is used to set Bootstrap alert class for message
     alert, message = "info", ["You shouldn't see this message. Please, let us know if you did."]
     photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
+    album = Album.objects.get(pk=request.POST.get('album_id', ''))
+    tagged_users = photo.users.all()
     try:
         import re
         emails = [*filter(None, re.split("[, ]", request.POST.get('users', '')))]
@@ -162,4 +179,29 @@ def tag_users(request):
             alert, message = "warning", ["Please enter a user email to tag them."]
     except CustomUser.DoesNotExist:
         alert, message = "danger", ["User(s) do not have an account with us. Tag unsuccessful.", "If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."]
-    return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo})
+    return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo, 'tagged_users': tagged_users, 'album': album})
+
+
+def tagged_album(request):
+    """
+    Displays an album with all tagged photos of
+    the currently logged in user.
+    """
+    # If the user requested an album in the past, just update it.
+    try:
+        album = Album.objects.get(owner_id=request.user, title="Tagged Photos of {}".format(request.user.email))
+    # If this is the first request, create the album.
+    except Album.DoesNotExist:
+        album = Album.objects.create(owner_id=request.user, title="Tagged Photos of {}".format(request.user.email))
+    tagged_photos = Photo.objects.filter(users=request.user)
+    # Just serves the album if no new tagged photos have been added.
+    if list(album.photo_set.all()) == list(tagged_photos):
+        return redirect('/gallery/{}/{}'.format(album.id, album.archive_id.id))
+    # Otherwise, adds the new photo(s) to the album and serves it.
+    for photo in tagged_photos:
+        photo.albums.add(album)
+    archive = Archive.objects.create(album_id=album)
+    album.add_archive(archive)
+    link = Link.objects.create(archive=archive)
+    thumbnails = Photo.objects.filter(albums=album)
+    return redirect('/gallery/{}/{}'.format(album.id, archive.id))
