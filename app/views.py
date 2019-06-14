@@ -164,10 +164,10 @@ def tag_users(request):
     """
     # The `alert` str variable is used to set Bootstrap alert class for message
     alert, message = "info", ["You shouldn't see this message. Please, let us know if you did."]
-    photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
-    album = Album.objects.get(pk=request.POST.get('album_id', ''))
-    tagged_users = photo.users.all()
     try:
+        photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
+        tagged_users = photo.users.all()
+        album = Album.objects.get(pk=request.POST.get('album_id', ''))
         import re
         emails = [*filter(None, re.split("[, ]", request.POST.get('users', '')))]
         if emails:
@@ -179,7 +179,8 @@ def tag_users(request):
             alert, message = "warning", ["Please enter a user email to tag them."]
     except CustomUser.DoesNotExist:
         alert, message = "danger", ["User(s) do not have an account with us. Tag unsuccessful.", "If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."]
-    return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo, 'tagged_users': tagged_users, 'album': album})
+    finally:
+        return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo, 'tagged_users': tagged_users, 'album': album})
 
 
 def tagged_album(request):
@@ -187,13 +188,15 @@ def tagged_album(request):
     Displays an album with all tagged photos of
     the currently logged in user.
     """
+    tagged_photos = Photo.objects.filter(users=request.user)
+    if not tagged_photos:
+        return render(request, 'gallery.html', {'message': 'There are currently no tagged images of you.'})
     # If the user requested an album in the past, just update it.
     try:
         album = Album.objects.get(owner_id=request.user, title="Tagged Photos of {}".format(request.user.email))
     # If this is the first request, create the album.
     except Album.DoesNotExist:
         album = Album.objects.create(owner_id=request.user, title="Tagged Photos of {}".format(request.user.email))
-    tagged_photos = Photo.objects.filter(users=request.user)
     # Just serves the album if no new tagged photos have been added.
     if list(album.photo_set.all()) == list(tagged_photos):
         return redirect('/gallery/{}/{}'.format(album.id, album.archive_id.id))

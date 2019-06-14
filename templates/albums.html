@@ -13,7 +13,7 @@
   {% else %}
     {% for album in albums %}
       <div class="m-2">
-        <a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
+	      <a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
           {{ album.title }}
 	</a>
       </div>
