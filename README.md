@@ -19,8 +19,6 @@ In order to share pictures of events with others, we often have to sacrifice som
 - [pillow](https://pillow.readthedocs.io/en/stable/)
 - [sqlite](https://sqlite.org/docs.html)
 - [python-decouple](https://pypi.org/project/python-decouple/)
-## Screenshots :framed_picture:
-TODO: Include screenshots of our app
 
 ## Installation :open_file_folder:
 1) Install django
