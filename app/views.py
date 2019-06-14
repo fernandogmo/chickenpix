@@ -9,6 +9,7 @@ from .models import Album, Photo, Archive, Link, CustomUser
 import requests
 import os
 
+
 def validate(request):
     """
     Validates the 6-digit callback token sent to user
