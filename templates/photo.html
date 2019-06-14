@@ -4,7 +4,7 @@
 {% block title %}Photo · {{ block.super }}{% endblock %}
 
 {% block content %}
-  <a href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">Back to Gallery</a>
+  <a class="btn btn-outline-primary btn-sm" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">Back to Gallery</a>
   {% if tagged_users %}
     <h1 class="display-4">Users tagged in this photo</h1>
     {% for user in tagged_users %}
