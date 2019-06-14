@@ -3,10 +3,14 @@
 
 {% block title %}Home · {{ block.super }}{% endblock %}
 
-{% block content %}
+{% block heading %}
   {% if user.is_authenticated %}
-    <h1>Hi, {{ user.email }}!</h1>
-  {% else %}
+    Hi, {{ user.email }}!
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if not user.is_authenticated %}
     <p>{{ message }}</p>
     <form method="post" action="/">
       {% csrf_token %}
