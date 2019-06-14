@@ -3,12 +3,16 @@
 
 {% block title %}Home · {{ block.super }}{% endblock %}
 
+{% block heading %}
+  {% if user.is_authenticated %}
+    Hi, {{ user.email }}!
+  {% endif %}
+{% endblock %}
+
 {% block content %}
   {% if user.is_authenticated %}
-    <h1>Hi, {{ user.email }}!</h1>
     {% include 'testimonial.html' %}
   {% else %}
-    {% include 'testimonial.html' %}
     <p>{{ message }}</p>
     <form method="post" action="/">
       {% csrf_token %}
@@ -17,5 +21,6 @@
         Login
       </button>
     </form>
+    {% include 'testimonial.html' %}
   {% endif %}
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block content %}
 <!-- "multipart/form-data" is necessary for the actual images to be uploaded, not just the file names -->
   {% if message %}
-  <p>{{ message }}</p>
+    <p>{{ message }}</p>
   {% endif %}
   <form method="post" action="/photos/", enctype="multipart/form-data">
     {% csrf_token %}

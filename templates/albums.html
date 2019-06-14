@@ -3,13 +3,20 @@
 
 {% block title %}Home · {{ block.super }}{% endblock %}
 
+{% block heading %}
+  Your Albums
+{% endblock %}
+
 {% block content %}
-<h1>Your Albums</h1>
-{% if albums|length < 1 %}
-  <p>Albums you upload will appear here.</p>
-{% else %}
-  {% for album in albums %}
-    <p><a href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">{{ album.title }}</a></p>
-  {% endfor %}
-{% endif %}
+  {% if albums|length < 1 %}
+    <p style="font-size: 1.5rem;">Albums you upload will appear here.</p>
+  {% else %}
+    {% for album in albums %}
+      <div class="m-2">
+        <a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
+          {{ album.title }}
+	</a>
+      </div>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
