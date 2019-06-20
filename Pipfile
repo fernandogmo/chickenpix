@@ -12,6 +12,7 @@ django = "*"
 djangorestframework = "*"
 pillow = "*"
 python-decouple = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.6"
