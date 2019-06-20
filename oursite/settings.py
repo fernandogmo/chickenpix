@@ -25,7 +25,7 @@ DEBUG = os.environ.get('DEBUG_VALUE', 'False')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', config('SECRET_KEY'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['chickenpix.herokuapp.com']
 
 
 # Application definition
