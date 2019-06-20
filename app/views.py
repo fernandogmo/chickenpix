@@ -71,7 +71,7 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://localhost:8000/auth/email/',
+            response = requests.post(f'http://{settings.ALLOWED_HOSTS[0]}/auth/email/',
                                      data={'email': request.POST.get("email", "")})
             detail = response.json().get('detail', 'NO DETAIL!')
             if response.status_code == 200:
