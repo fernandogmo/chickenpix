@@ -32,7 +32,7 @@ def validate(request):
         message = ' Please re-enter your token.'
         if form.is_valid():
             # If token is 6 digits, authenticate it and receive authentication token
-            response = requests.post('http://localhost:8000/callback/auth/',
+            response = requests.post('http://0.0.0.0:8000/callback/auth/',
                                      data={'token': request.POST.get("token", "")})
             # Save authentication token or error message
             auth_token = response.json().get('token', 'NO DETAIL!')
@@ -71,7 +71,7 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('http://localhost:8000/auth/email/',
+            response = requests.post('http://0.0.0.0:8000/auth/email/',
                                      data={'email': request.POST.get("email", "")})
             detail = response.json().get('detail', 'NO DETAIL!')
             if response.status_code == 200:
@@ -142,6 +142,12 @@ def gallery(request, album_id, archive_id):
     """
     album = Album.objects.get(pk=album_id)
     thumbnails = album.photo_set.all()
+    if not thumbnails:
+        if album.title == 'Tagged Photos of {}'.format(request.user.email):
+            message = 'There are currently no tagged images of you.'
+        else:
+            message = 'There are no photos in this album.'
+        return render(request, 'gallery.html', {'message': message})
     link = Link.objects.get(archive_id=archive_id)
     return render(request, 'gallery.html', {'images': thumbnails, 'link': link, 'album': album})
 
@@ -154,8 +160,11 @@ def photo(request, album_id, photo_id):
     photo = Photo.objects.get(pk=photo_id)
     album = Album.objects.get(pk=album_id)
     tagged_users = photo.users.all()
-    return render(request, 'photo.html', {'photo': photo, 'tagged_users': tagged_users, 'album': album})
-
+    if album.title == 'Tagged Photos of {}'.format(request.user.email):
+        button_label = 'Untag Myself'
+    else:
+        button_label = 'Delete Photo'
+    return render(request, 'photo.html', {'photo': photo, 'tagged_users': tagged_users, 'album': album, 'button_label': button_label})
 
 def tag_users(request):
     """
@@ -180,7 +189,11 @@ def tag_users(request):
     except CustomUser.DoesNotExist:
         alert, message = "danger", ["User(s) do not have an account with us. Tag unsuccessful.", "If you'd like them to be able to download all the tagged photos of themselves, ask them to create an account with us."]
     finally:
-        return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo, 'tagged_users': tagged_users, 'album': album})
+        if album.title == 'Tagged Photos of {}'.format(request.user.email):
+            button_label = 'Untag Myself'
+        else:
+            button_label = 'Delete Photo'
+        return render(request, 'photo.html', {'alert': alert, 'message': message, 'photo': photo, 'tagged_users': tagged_users, 'album': album, 'button_label': button_label})
 
 
 def tagged_album(request):
@@ -208,3 +221,15 @@ def tagged_album(request):
     link = Link.objects.create(archive=archive)
     thumbnails = Photo.objects.filter(albums=album)
     return redirect('/gallery/{}/{}'.format(album.id, archive.id))
+
+def delete_photo(request):
+    photo = Photo.objects.get(pk=request.POST.get('photo_id', ''))
+    album = Album.objects.get(pk=request.POST.get('album_id', ''))
+    if request.POST.get('button_label', '') == 'Untag':
+        album.photo_set.remove(photo)
+        photo.users.remove(request.user)
+        deleted = 'Photo succesfully untagged.'
+    elif request.POST.get('button_label', '') == 'Delete':
+        photo.delete()
+        deleted ='Photo succesfully deleted.'
+    return render(request, 'photo.html', {'deleted': deleted, 'album': album})
