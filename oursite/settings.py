@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG_VALUE', 'False')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', config('SECRET_KEY'))
 
 ALLOWED_HOSTS = []
 
@@ -100,7 +100,7 @@ DATABASES = {
 PASSWORDLESS_AUTH = {
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
     'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
-    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': config('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS'),
+    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': os.environ.get('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS', config('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS')),
 }
 
 AUTH_USER_MODEL = 'app.CustomUser'
@@ -138,7 +138,7 @@ if DEBUG == True:
 # Email backend for production
 else:
     EMAIL_USE_TLS = True
-    EMAIL_HOST = config('EMAIL_HOST')
-    EMAIL_PORT = config('EMAIL_PORT', cast=int)
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', config('EMAIL_HOST'))
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', config('EMAIL_PORT', cast=int)))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', config('EMAIL_HOST_USER'))
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', config('EMAIL_HOST_PASSWORD'))
