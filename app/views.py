@@ -61,7 +61,7 @@ def upload(request):
 
 def home(request):
     """
-    Handles homepage view.
+    Handles homepage view
 
     Renders a page with a email address form &
     sends an email containing a 6-digit login token
