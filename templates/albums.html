@@ -1,0 +1,22 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home · {{ block.super }}{% endblock %}
+
+{% block heading %}
+  Your Albums
+{% endblock %}
+
+{% block content %}
+  {% if albums|length < 1 %}
+    <p style="font-size: 1.5rem;">Albums you upload will appear here.</p>
+  {% else %}
+    {% for album in albums %}
+      <div class="m-2">
+	      <a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
+          {{ album.title }}
+	</a>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

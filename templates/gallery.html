@@ -1,0 +1,26 @@
+<!-- templates/gallery.html -->
+{% extends 'base.html' %}
+
+{% block title %}Gallery · {{ block.super }}{% endblock %}
+
+{% block heading %}
+  {{ album.title }}
+{% endblock %}
+
+{% block content %}
+<div class="my-3">
+{% if message %}
+  <p>{{ message }}</p>
+{% else %}
+  <p>Copy this link and send it to your friends. It will send them to a page where they can download a zip file containing all the photos you just uploaded.</p>
+  <p>{{ link.url }}</p>
+  {% for image in images %}
+    <div class="m-1">
+      <a href="/photo/{{ album.id }}/{{ image.id }}">
+        <img class="img-fluid img-thumbnail" src="{{ MEDIA_URL }}{{ image.thumbnail.url }}"/>
+      </a>
+    </div>
+  {% endfor %}
+{% endif %}
+</div>
+{% endblock %}

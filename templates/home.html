@@ -1,0 +1,26 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home · {{ block.super }}{% endblock %}
+
+{% block heading %}
+  {% if user.is_authenticated %}
+    Hi, {{ user.email }}!
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {% include 'testimonial.html' %}
+  {% else %}
+    <p>{{ message }}</p>
+    <form method="post" action="/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Login
+      </button>
+    </form>
+    {% include 'testimonial.html' %}
+  {% endif %}
+{% endblock %}

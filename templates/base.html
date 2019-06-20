@@ -1,0 +1,105 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="data:image/svg+xml;base64,
+  PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRw
+  Oi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9
+  IjAgMCA2NCA2NCI+PGc+PGcgc3R5bGU9ImZpbGw6I0ZGMDBCQiI+PHN2ZyBmaWxsPSIjRkYwMEJC
+  IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIg
+  dmlld0JveD0iMCAwIDEwMCAxMDAiIHg9IjBweCIgeT0iMHB4Ij48dGl0bGU+NTg8L3RpdGxlPjxn
+  IGRhdGEtbmFtZT0iR3JvdXAiPjxwYXRoIGRhdGEtbmFtZT0iQ29tcG91bmQgUGF0aCIgZD0iTTgz
+  LjUsMTJoLTY3YTEzLDEzLDAsMCwwLTEzLDEzVjc1YTEzLDEzLDAsMCwwLDEzLDEzaDY3YTEzLDEz
+  LDAsMCwwLDEzLTEzVjI1QTEzLDEzLDAsMCwwLDgzLjUsMTJabS02Nyw2aDY3YTcsNywwLDAsMSw3
+  LDd2OUg5LjVWMjVBNyw3LDAsMCwxLDE2LjUsMThabTY3LDY0aC02N2E3LDcsMCwwLDEtNy03VjQw
+  aDgxVjc1QTcsNywwLDAsMSw4My41LDgyWiI+PC9wYXRoPjxjaXJjbGUgZGF0YS1uYW1lPSJQYXRo
+  IiBjeD0iMzEuNSIgY3k9IjI2IiByPSI1Ij48L2NpcmNsZT48Y2lyY2xlIGRhdGEtbmFtZT0iUGF0
+  aCIgY3g9IjQ0LjUiIGN5PSIyNiIgcj0iNSI+PC9jaXJjbGU+PGNpcmNsZSBkYXRhLW5hbWU9IlBh
+  dGgiIGN4PSIxOC41IiBjeT0iMjYiIHI9IjUiPjwvY2lyY2xlPjxwYXRoIGRhdGEtbmFtZT0iQ29t
+  cG91bmQgUGF0aCIgZD0iTTYzLjgsNDkuMWExMC43LDEwLjcsMCwwLDAtMTMuOC0xLDEwLjcsMTAu
+  NywwLDAsMC0xMy44LDEsMTAuNSwxMC41LDAsMCwwLDAsMTQuOUw0Ny45LDc1LjFhMywzLDAsMCww
+  LDQuMSwwTDYzLjgsNjRhMTAuNSwxMC41LDAsMCwwLDAtMTQuOVpNNTkuNiw1OS43LDUwLDY4Ljhs
+  LTkuNi05LjFhNC41LDQuNSwwLDAsMSwwLTYuNCw0LjYsNC42LDAsMCwxLDYuNSwwbC42LjdhMywz
+  LDAsMCwwLDUsMGwuNi0uN2E0LjYsNC42LDAsMCwxLDYuNSwwLDQuNSw0LjUsMCwwLDEsMCw2LjNa
+  Ij48L3BhdGg+PC9nPjwvc3ZnPjwvZz48L2c+PC9zdmc+" rel="icon" type="image/x-icon">
+
+  <title>{% block title %}Pixguise{% endblock %}</title>
+  <style>
+	html, body {
+	    height: 100%;
+	    width: 100%;
+	    margin: 0;
+	    padding: 0;
+	    overflow-y: auto;
+	}
+
+	main {
+	    max-height: calc(100% - 6rem);
+	    overflow: auto;
+	}
+
+	form>p {
+            font-size: 1.2rem;
+	}
+
+	input[type=checkbox] {
+	    margin: 0 0.25rem;
+	}
+
+	header {
+	    width: 100%;
+	    position: relative;
+	    top: 0;
+	}
+
+	nav.bg-dark {
+            background-image: linear-gradient(180deg, #1b2024cc, transparent, transparent, transparent, transparent, transparent, transparent, transparent);
+	}
+
+	.footer {
+	    width: 100%;
+	    position: fixed;
+	    bottom: 0;
+	}
+
+	.display-4 {
+	  font-size: 2.5rem;
+	}
+
+	.img-thumbnail {
+	    padding: 0;
+	}
+  </style>
+</head>
+<body style="color: rgb(218, 215, 210);
+	     background-color: rgb(24, 26, 27);
+	     background-image: linear-gradient(to top right, #121c27, #2B0B24)">
+  <header>
+    {% include 'nav.html' %}
+  </header>
+  <main class="px-3 py-2">
+    <h1 class="display-4">
+      {% block heading %}{% endblock %}
+    </h1>
+    <div class="container">
+    <div class="col-sm-8 offset-sm-2">
+    {% block content %}
+    {% endblock %}
+    </div>
+    </div>
+  </main>
+  <footer class="footer py-2 bg-dark">
+    <div class="container text-center">
+      <span>© 2019</span>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
