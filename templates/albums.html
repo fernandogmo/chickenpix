@@ -8,14 +8,22 @@
 {% endblock %}
 
 {% block content %}
+  {% if deleted %}
+    <p style="font-size: 1.5rem;">{{ deleted }}</p>
+  {% endif %}
   {% if albums|length < 1 %}
     <p style="font-size: 1.5rem;">Albums you upload will appear here.</p>
   {% else %}
     {% for album in albums %}
       <div class="m-2">
-	      <a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
+	<a class="btn btn-primary" href="/gallery/{{ album.id }}/{{ album.archive_id.id }}">
           {{ album.title }}
 	</a>
+	<form method="post" action="/delete_album/">
+	  {% csrf_token %}
+	  <input type="hidden" class="form-control" name="album_id" value={{ album.id }}>
+	  <button class="btn btn-primary" type="submit">Delete Album</button>
+	</form>
       </div>
     {% endfor %}
   {% endif %}

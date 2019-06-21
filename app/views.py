@@ -133,6 +133,9 @@ def albums(request):
     Displays a list of albums associated with logged in user.
     """
     albums = Album.objects.filter(owner_id=request.user)
+    for album in albums:
+        if not album.photo_set.all():
+            album.delete()
     return render(request, 'albums.html', {'albums': albums})
 
 
@@ -233,3 +236,11 @@ def delete_photo(request):
         photo.delete()
         deleted ='Photo succesfully deleted.'
     return render(request, 'photo.html', {'deleted': deleted, 'album': album})
+
+def delete_album(request):
+    album = Album.objects.get(pk=request.POST.get('album_id', ''))
+    if album.title != 'Tagged Photos of {}'.format(request.user.email):
+        for photo in album.photo_set.all():
+            photo.delete()
+    album.delete()
+    return render(request, 'albums.html', {'deleted': '{} successfully deleted.'.format(album.title)})

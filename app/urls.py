@@ -21,7 +21,7 @@ urlpatterns = [
         path('photo/<int:album_id>/<int:photo_id>', views.photo, name='photo'),
         path('tag_users/', views.tag_users, name='tag_users'),
         path('tagged_album/', views.tagged_album, name='tagged_album'),
-        # path('delete_album/<int:album_id>/int:archive_id>', views.delete_album, name='delete_album'),
+        path('delete_album/', views.delete_album, name='delete_album'),
         path('delete_photo/', views.delete_photo, name='delete_photo'),
 ]
 
