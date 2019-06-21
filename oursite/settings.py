@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -100,7 +101,8 @@ DATABASES = {
 PASSWORDLESS_AUTH = {
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
     'PASSWORDLESS_USER_MARK_EMAIL_VERIFIED': True,
-    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': os.environ.get('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS', config('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS')),
+    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': os.environ.get('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS',
+                                                         config('PASSWORDLESS_EMAIL_NO_REPLY_ADDRESS')),
 }
 
 AUTH_USER_MODEL = 'app.CustomUser'
@@ -142,3 +144,5 @@ else:
     EMAIL_PORT = int(os.environ.get('EMAIL_PORT', config('EMAIL_PORT', cast=int)))
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', config('EMAIL_HOST_USER'))
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', config('EMAIL_HOST_PASSWORD'))
+
+django_heroku.settings(locals())
