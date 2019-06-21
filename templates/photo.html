@@ -33,10 +33,10 @@
     </form>
     <form method="post" action="/delete_photo/">
       {% csrf_token %}
-      <button class="btn btn-log btn-primary btn-block" type="submit">{{ button_label }}</button>
       <input type="hidden" class="form-control" name="photo_id" value={{ photo.id }}>
       <input type="hidden" class="form-control" name="album_id" value={{ album.id }}>
       <input type="hidden" class="form-control" name="button_label" value={{ button_label }}>
+      <button class="btn btn-log btn-primary btn-block" type="submit">{{ button_label }}</button>
     </form>
   {% endif %}
 {% endblock %}
