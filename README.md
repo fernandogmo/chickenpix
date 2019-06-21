@@ -1,4 +1,4 @@
-# pixguise :camera:
+# Chickenpix :chicken: :camera:
 Photosharing without social media.
 
 ## Motivation :muscle:
