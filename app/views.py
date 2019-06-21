@@ -71,7 +71,7 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('https:///auth/email/',
+            response = requests.post('https://chickenpix.herokuapp.com/auth/email/',
                                      data={'email': request.POST.get("email", "")})
             detail = response.json().get('detail', 'NO DETAIL!')
             if response.status_code == 200:
