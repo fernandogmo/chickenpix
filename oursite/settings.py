@@ -26,7 +26,7 @@ DEBUG = os.environ.get('DEBUG_VALUE', 'False')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', config('SECRET_KEY'))
 
-ALLOWED_HOSTS = ['chickenpix.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'chickenpix.herokuapp.com']
 
 
 # Application definition
@@ -133,7 +133,7 @@ MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = "/media/"
 
 # Email backend for development
-if DEBUG == True:
+if DEBUG:
     EMAIL_HOST = '127.0.0.1'
     EMAIL_PORT = 1025
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -145,4 +145,4 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', config('EMAIL_HOST_USER'))
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', config('EMAIL_HOST_PASSWORD'))
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
