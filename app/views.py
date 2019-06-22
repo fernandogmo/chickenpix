@@ -31,20 +31,26 @@ def validate(request):
         form = TokenForm(request.POST)
         message = ' Please re-enter your token.'
         if form.is_valid():
+            token = request.POST.get('token','')
             # If token is 6 digits, authenticate it and receive authentication token
-            response = requests.post('http://localhost:8000/callback/auth/',
-                                     data={'token': request.POST.get("token", "")})
-            # Save authentication token or error message
-            auth_token = response.json().get('token', 'NO DETAIL!')
-            if response.status_code == 200:
-                # Make sure auth token is associated with a user
-                if not login_user(request, auth_token):
-                    request.session['_message'] = "We couldn't log you in." + message
+            for host in settings.ALLOWED_HOSTS:
+                if host == 'localhost':
+                    host += ':8000'
+                response = requests.post(f'http://{host}/callback/auth/', data={'token': token})
+                # Save authentication token or error message
+                try:
+                    auth_token = response.json().get('token', 'NO TOKEN!')
+                except:
+                    auth_token = 'NO TOKEN!'
+                if response.status_code == 200:
+                    # Make sure auth token is associated with a user
+                    if not login_user(request, auth_token):
+                        request.session['_message'] = "We couldn't log you in." + message
+                        return redirect('/validate')
+                    return redirect('/')
+                else:
+                    request.session['_message'] = ' '.join(auth_token) + message
                     return redirect('/validate')
-                return redirect('/')
-            else:
-                request.session['_message'] = ' '.join(auth_token) + message
-                return redirect('/validate')
         else:
             request.session['_message'] = 'Something went wrong.' + message
             return redirect('/validate')
@@ -71,14 +77,20 @@ def home(request):
     else:
         form = EmailForm(request.POST)
         if form.is_valid():
-            response = requests.post('https://chickenpix.herokuapp.com/auth/email/',
-                                     data={'email': request.POST.get("email", "")})
-            detail = response.json().get('detail', 'NO DETAIL!')
-            if response.status_code == 200:
-                request.session['_message'] = detail
-                return redirect('/validate')
-            else:
-                return render(request, 'home.html', {'form': form, 'message': detail})
+            email = request.POST.get('email', '')
+            for host in settings.ALLOWED_HOSTS:
+                if host == 'localhost':
+                    host += ':8000'
+                response = requests.post(f'http://{host}/auth/email/', data={'email': email})
+                try:
+                    detail = response.json().get('detail', 'NO DETAIL!')
+                except:
+                    detail = 'NO DETAIL!'
+                if response.status_code == 200:
+                    request.session['_message'] = detail
+                    return redirect('/validate')
+                else:
+                    return render(request, 'home.html', {'form': form, 'message': detail})
     return render(request, 'home.html', {'form': form,
                                          'message': 'You are not logged in. \
                                          Please enter your email address to \
