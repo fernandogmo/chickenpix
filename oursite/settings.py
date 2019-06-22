@@ -153,3 +153,4 @@ else:
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 django_heroku.settings(locals())
+ALLOWED_HOSTS = ['chickenpix.herokuapp.com']
