@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import django_heroku
+import dj_database_url
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -149,4 +150,6 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', config('EMAIL_HOST_USER'))
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', config('EMAIL_HOST_PASSWORD'))
 
-# django_heroku.settings(locals())
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+django_heroku.settings(locals())
