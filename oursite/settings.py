@@ -28,8 +28,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', config('SECRET_KEY'))
 
 
 ALLOWED_HOSTS = ['chickenpix.herokuapp.com']
-if DEBUG:
-    ALLOWED_HOSTS = ['localhost'] + ALLOWED_HOSTS
+# if DEBUG:
+#    ALLOWED_HOSTS = ['localhost'] + ALLOWED_HOSTS
 
 
 
