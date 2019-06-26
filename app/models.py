@@ -226,7 +226,7 @@ class LinkManager(models.Manager):
         host = settings.ALLOWED_HOSTS[0]
         if host == 'localhost':
             host += ':8000'
-        url = f'http://{host}/download/{archive.id}/{uuid4()}/')
+        url = f'http://{host}/download/{archive.id}/{uuid4()}/'
 
         link = self.model(url=url, archive_id=archive)
         link.save(using=self._db)
