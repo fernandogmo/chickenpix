@@ -222,7 +222,11 @@ class LinkManager(models.Manager):
             raise ValueError('Archive id is required')
 
         # TODO - finalize URL name and edit download route and HTML based on final URL
-        url = 'http://localhost:8000/download/{}/{}/'.format(archive.id, uuid4())
+        # url = 'http://localhost:8000/download/{}/{}/'.format(archive.id, uuid4())
+        host = settings.ALLOWED_HOSTS[0]
+        if host == 'localhost':
+            host += ':8000'
+        url = f'http://{host}/download/{archive.id}/{uuid4()}/')
 
         link = self.model(url=url, archive_id=archive)
         link.save(using=self._db)
