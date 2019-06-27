@@ -21,14 +21,25 @@ class MyUserManager(BaseUserManager):
     """
     Custom UserManager with email normalization
     """
-    def create_user(self, email):
+    def create_user(self, email, password=None, **kwargs):
         """
         Creates and saves User
         """
         if not email:
             raise ValueError('Email is required')
 
-        user = self.model(email=MyUserManager.normalize_email(email))
+        kwargs['is_superuser'] = False
+        user = self.model(email=MyUserManager.normalize_email(email), **kwargs)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password, **kwargs):
+        if not email:
+            raise ValueError('Email is required')
+
+        kwargs['is_superuser'] = True
+        user = self.model(email=MyUserManager.normalize_email(email), **kwargs)
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
