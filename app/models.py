@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db.models.manager import BaseManager
 from django.core.validators import RegexValidator
 from uuid import uuid4
@@ -38,12 +38,13 @@ class MyUserManager(BaseUserManager):
             raise ValueError('Email is required')
 
         kwargs['is_superuser'] = True
+        kwargs['is_staff'] = True
         user = self.model(email=MyUserManager.normalize_email(email), **kwargs)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model with email and email_verified
     fields
@@ -53,6 +54,10 @@ class CustomUser(AbstractBaseUser):
                               blank=True,
                               null=True)
     email_verified = models.BooleanField(default=False)
+
+    # allow custom user to also work with admin
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     # Goal: add this feature
     """
