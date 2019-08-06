@@ -8,7 +8,7 @@ verify_ssl = true
 [packages]
 drfpasswordless = "*"
 requests = "*"
-django = "*"
+django = ">=2.2.4"
 djangorestframework = "*"
 pillow = "*"
 python-decouple = "*"
